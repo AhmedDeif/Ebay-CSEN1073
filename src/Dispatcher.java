@@ -1,9 +1,19 @@
-import java.io.*;
-import java.sql.*;
-import java.util.*;
-import java.math.*;
-import java.lang.reflect.*;
-import java.util.concurrent.*;
+import java.io.InputStream;
+import java.lang.reflect.Constructor;
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.Properties;
+import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -214,10 +224,10 @@ public class Dispatcher {
 			if (strEmail == null || strEmail.trim().length() == 0 || strPassword == null
 					|| strPassword.trim().length() == 0 || strFirstName == null || strFirstName.trim().length() == 0
 					|| strLastName == null || strLastName.trim().length() == 0)
-				return null;
+				throw new Exception("Add users parameterss are missing");
 
 			if (!EmailVerifier.verify(strEmail))
-				return null;
+				throw new Exception("Cannot verify email");
 
 			sqlProc = connection.prepareCall("{?=call addUserSimple(?,?,?,?)}");
 			sqlProc.registerOutParameter(1, Types.INTEGER);
@@ -332,7 +342,7 @@ public class Dispatcher {
 	}
 
 	public void init() throws Exception {
-		loadHikari("localhost", 5432, "thedatabase", "postgres", "thepassword");
+		loadHikari("localhost", 5432, "ebay", "ebay", "password");
 		loadThreadPool();
 		loadCommands();
 	}

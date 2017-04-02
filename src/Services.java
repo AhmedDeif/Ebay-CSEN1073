@@ -26,42 +26,42 @@ public final class Services {
 		
 		
 		
-		Connection c = null;
-	      try {
-	         Class.forName("org.postgresql.Driver");
-	         c = DriverManager
-	            .getConnection("jdbc:postgresql://localhost:5432/ebay",
-	            "postgres", "1994");
-	      } catch (Exception e) {
-	         e.printStackTrace();
-	         System.err.println(e.getClass().getName()+": "+e.getMessage());
-	         System.exit(0);
-	      }
-	      System.out.println("Opened database successfully");
-		
-	      
-	      Statement stmt = null;
-	      try {
-	         Class.forName("org.postgresql.Driver");
-	         c = DriverManager
-	 	            .getConnection("jdbc:postgresql://localhost:5432/ebay",
-	 	            "postgres", "1994");
-	         c.setAutoCommit(false);
-	         System.out.println("Opened database successfully");
-
-	         stmt = c.createStatement();
-	         String sql = "INSERT INTO Users (email,passwordHash,creationTime) "
-	               + "VALUES ('Paul@msa.com', 'California', '2011/05/26 09:00:00' );";
-	         stmt.executeUpdate(sql);
-
-	         stmt.close();
-	         c.commit();
-	         c.close();
-	      } catch (Exception e) {
-	         System.err.println( e.getClass().getName()+": "+ e.getMessage() );
-	         System.exit(0);
-	      }
-	      System.out.println("Records created successfully");
+//		Connection c = null;
+//	      try {
+//	         Class.forName("org.postgresql.Driver");
+//	         c = DriverManager
+//	            .getConnection("jdbc:postgresql://localhost:5432/ebay",
+//	            "ebay", "password");
+//	      } catch (Exception e) {
+//	         e.printStackTrace();
+//	         System.err.println(e.getClass().getName()+": "+e.getMessage());
+//	         System.exit(0);
+//	      }
+//	      System.out.println("Opened database successfully");
+//		
+//	      
+//	      Statement stmt = null;
+//	      try {
+//	         Class.forName("org.postgresql.Driver");
+//	         c = DriverManager
+//	 	            .getConnection("jdbc:postgresql://localhost:5432/ebay",
+//	 	            "ebay", "password");
+//	         c.setAutoCommit(false);
+//	         System.out.println("Opened database successfully");
+//
+//	         stmt = c.createStatement();
+//	         String sql = "INSERT INTO Users (email,passwordHash,creationTime) "
+//	               + "VALUES ('Paul@msa.com', 'California', '2011/05/26 09:00:00' );";
+//	         stmt.executeUpdate(sql);
+//
+//	         stmt.close();
+//	         c.commit();
+//	         c.close();
+//	      } catch (Exception e) {
+//	         System.err.println( e.getClass().getName()+": "+ e.getMessage() );
+//	         System.exit(0);
+//	      }
+//	      System.out.println("Records created successfully");
 	      
 		
 		

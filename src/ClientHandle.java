@@ -1,11 +1,9 @@
 
 import java.net.InetAddress;
-import java.net.SocketAddress;
 import java.net.InetSocketAddress;
 
-import io.netty.handler.codec.http.HttpRequest;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.Channel;
+import io.netty.handler.codec.http.HttpRequest;
 
 public class ClientHandle {
 

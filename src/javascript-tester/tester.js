@@ -14,20 +14,11 @@ function stripNewLineCharacter( strText ){
 }
 
 
-function sendRequest_vista( strJSON, callbackfunc ){
-   
-    request.cookie("");
-	request.post('http://localhost:80/',
-				{ form: { SrvReq: strJSON } },
-				function(err,httpResponse,body){callbackfunc(err,httpResponse,body)}
-	);
-}
-
 function sendRequest_win8( strJSON, callbackfunc ){
 
-	unirest.post('http://localhost:80/')
+	unirest.post('http://localhost:3000/')
 	.header('Accept', 'application/json')
-	.send({ "SrvReq": strJSON })
+	.send({ "body" : strJSON })
 	.end(function (response) {
 		console.log(response.body);
 	});
@@ -38,12 +29,14 @@ function sendRequest( strJSON, callbackfunc ){
 	sendRequest_win8(strJSON, callbackfunc);
 }
 
-function addUser( email, password ){
+function addUser( email, password, firstName, lastName ){
     var gsRequest           = new Object( );
     gsRequest.action        = "addUserSimple";
     var gsRequestData       = new Object( );
     gsRequestData.email     = email;
     gsRequestData.password  = password;
+    gsRequestData.firstName = firstName;
+    gsRequestData.lastName  = lastName;
     gsRequest.data          = gsRequestData;
     var strJSON = JSON.stringify(gsRequest);
     sendRequest( strJSON, addUserResponse );
@@ -70,7 +63,7 @@ function attemptLoginResponse( err,httpResponse,body ){
 
 
 // To start sending messages:
-addUser("mohamed@m.com","johnpass");
+addUser("mohamed@m.com","johnpass", "mohamed", "john");
 //attemptLogin("mohamed@m.com","johnpass");
 
 

@@ -1,16 +1,14 @@
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
-import org.boon.json.*;
+import com.google.gson.Gson;
 
-
-import io.netty.handler.codec.http.multipart.MixedAttribute;
-import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
-import io.netty.handler.codec.http.QueryStringDecoder;
+import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
+import io.netty.handler.codec.http.multipart.InterfaceHttpData;
 
 public class RequestParser implements Runnable {
 
@@ -33,31 +31,25 @@ public class RequestParser implements Runnable {
 				List<InterfaceHttpData> lst;
 
 				postDecoder = new HttpPostRequestDecoder(request);
-				lst = postDecoder.getBodyHttpDatas();
+				Map<String, Object> bodyMap;
+				
+				
+				List<InterfaceHttpData> httpList = postDecoder.getBodyHttpDatas();
+				for (InterfaceHttpData temp : httpList) {
+					if (temp instanceof Attribute) {
+						Attribute requestData = (Attribute) temp;
+						String requestDataValue = requestData.getValue();
+						bodyMap = new Gson().fromJson(requestDataValue , Map.class);
+						System.out.println("DATA MAP: "+ bodyMap);
+						String action = bodyMap.get("action").toString();
+						Map<String, Object> data = (Map<String, Object>) bodyMap.get("data"); 
+//						String sessionId = bodyMap.get("sessionId").toString();
+						ClientRequest _clientRequest = new ClientRequest(action, null , data);
+						
+						_parseListener.parsingFinished(_clientHandle, _clientRequest);
 
-				System.out.println("PRINT POST DATA: " + lst.toString());
-				int i = 1;
-				for (InterfaceHttpData temp : lst) {
-					System.out.println("POST DECODER: " + temp + " END POST DECODER");
-					System.err.println(i + " " + temp);
-					i++;
-				}
-				// for (InterfaceHttpData temp : lst) {
-				// System.err.println(i + " " + temp);
-				// if (temp instanceof MixedAttribute) {
-				// MixedAttribute attribute = (MixedAttribute) temp;
-				// String value = attribute.getValue();
-				//
-				// Gson gson = new Gson();
-				// Object obj = gson.fromJson(value, Object.class);
-				//
-				// System.out.println("VALUE OF THE BITCH: " + obj.toString());
-				//
-				// }
-				// }
-				// ClientRequest clientRequest = new ClientRequest(strAction,
-				// strSessionID, mapRequestData)
-				// }
+					}
+				 }
 			}
 
 		} catch (Exception exp) {

@@ -1,6 +1,7 @@
 
-import java.sql.*;
-import java.util.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.Hashtable;
 
 public class Cache{
     

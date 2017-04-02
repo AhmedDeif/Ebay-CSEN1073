@@ -1,10 +1,6 @@
 
-import java.util.*;
-import java.util.concurrent.*;
-
-import org.boon.json.*;
-
-import io.netty.channel.ChannelHandlerContext;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Controller implements ParseListener {
 
@@ -28,7 +24,7 @@ public class Controller implements ParseListener {
 		try {
 			String strAction;
 			strAction = clientRequest.getAction();
-			if (strAction.equalsIgnoreCase("attemptLogin") || strAction.equalsIgnoreCase("addUser")) {
+			if (strAction.equalsIgnoreCase("attemptLogin") || strAction.equalsIgnoreCase("addUserSimple")) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;
