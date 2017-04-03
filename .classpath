@@ -10,5 +10,17 @@
 	<classpathentry kind="lib" path="src/libs/slf4j-api-1.7.10.jar"/>
 	<classpathentry kind="lib" path="src/libs/slf4j-jdk14-1.7.10.jar"/>
 	<classpathentry kind="lib" path="src/libs/gson-2.3.1.jar"/>
+	<classpathentry kind="lib" path="src/libs/amqp-client-4.1.0-javadoc.jar"/>
+	<classpathentry kind="lib" path="src/libs/amqp-client-4.1.0.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-rabbit-1.7.0.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-aop-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-beans-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-context-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-core-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-expression-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-tx-4.3.7.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-amqp-1.7.1.RELEASE.jar"/>
+	<classpathentry kind="lib" path="src/libs/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="src/libs/spring-retry-1.1.5.RELEASE.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
