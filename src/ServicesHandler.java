@@ -7,6 +7,10 @@ import static io.netty.handler.codec.http.HttpResponseStatus.BAD_REQUEST;
 import static io.netty.handler.codec.http.HttpResponseStatus.OK;
 import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import client.Client;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -20,8 +24,11 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.CharsetUtil;
+import message.Message;
 
 public class ServicesHandler extends SimpleChannelInboundHandler<Object> {
+
+	private static final Logger log = LoggerFactory.getLogger(ServicesHandler.class);
 
 	private HttpRequest request;
 
@@ -50,18 +57,22 @@ public class ServicesHandler extends SimpleChannelInboundHandler<Object> {
 
 	@Override
 	public boolean acceptInboundMessage(Object msg) throws Exception {
-		HttpRequest request;
-
-		request = (HttpRequest) msg;
-		if (request.method().compareTo(HttpMethod.POST) == 0)
-			return true;
-		return false;
+//		HttpRequest request;
+//
+//		request = (HttpRequest) msg;
+//		if (request.method().compareTo(HttpMethod.POST) == 0)
+//			return true;
+//		return false;
+		return true;
 	}
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, Object msg) {
 
 		System.err.println(" got a request: " + msg);
+		
+			log.info("SERVER GOT MESSAGE NOW SENDING TO CLIENT..");
+			ctx.writeAndFlush(msg);
 
 		if (msg instanceof HttpRequest) {
 

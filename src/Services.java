@@ -1,14 +1,23 @@
 
+import org.boon.core.Sys;
+
+import client.Client;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelOption;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.util.SelfSignedCertificate;
+import message.Message;
 import server.MqReceiver;
 import server.MqSender;
 
@@ -20,9 +29,8 @@ public final class Services {
 	protected static Controller _controller;
 	protected static MqSender _mqSender;
 
-
 	public static void main(String[] args) throws Exception {
-		
+
 		// Configure SSL.
 		final SslContext sslCtx;
 		if (SSL) {
@@ -39,41 +47,32 @@ public final class Services {
 			_controller = new Controller();
 			_controller.init();
 
-
-			
 			Cache.init();
 			Cache.loadFromDatabase();
 
-			_mqSender = new MqSender();			
-			startMqListener();
 
-			
 			ServerBootstrap serverBoot = new ServerBootstrap();
 			serverBoot.group(bossGroup, workerGroup);
 			serverBoot.channel(NioServerSocketChannel.class);
 			serverBoot.handler(new LoggingHandler(LogLevel.TRACE));
 			serverBoot.childHandler(new ServicesInitializer(sslCtx, _controller, _mqSender));
-			
+
 			serverBoot.option(ChannelOption.SO_BACKLOG, 128);
 			serverBoot.childOption(ChannelOption.SO_KEEPALIVE, false);
 			serverBoot.childOption(ChannelOption.TCP_NODELAY, true);
 			serverBoot.childOption(ChannelOption.SO_REUSEADDR, true);
-			
 
 			Channel channel = serverBoot.bind(PORT).sync().channel();
+
+			
+
+
 			System.err.println("Services running on  " + (SSL ? "https" : "http") + "://127.0.0.1:" + PORT + '/');
 			channel.closeFuture().sync();
-			
-			
+
 		} finally {
 			bossGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
 		}
-	}
-	
-	private static void  startMqListener() {
-		System.out.println("START MQ LISTENER");
-		MqReceiver mqReceiver = new MqReceiver();
-		mqReceiver.start();
 	}
 }

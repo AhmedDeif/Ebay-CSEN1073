@@ -27,5 +27,7 @@ public class HeartBeatHandler extends ChannelInboundHandlerAdapter {
 						+ ctx.channel().remoteAddress());
 			}
 		}
+		
+		System.out.println(evt.toString());
 	}
 }

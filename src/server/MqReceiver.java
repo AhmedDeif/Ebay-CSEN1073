@@ -1,7 +1,5 @@
 package server;
 
-import java.net.SocketAddress;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,12 +8,10 @@ import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.QueueingConsumer;
 
-import client.Client;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import io.netty.channel.group.ChannelGroupFuture;
-import io.netty.channel.group.ChannelGroupFutureListener;
-import io.netty.channel.socket.nio.NioSocketChannel;
+import client.ClientHandler;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandlerContext;
 
 /**
  * RabbitMQ Receiver based on RabbitMQ java client API
@@ -29,13 +25,17 @@ public class MqReceiver {
 
 	private Thread listenThread;
 
-	public MqReceiver() {
+	private ClientHandler clientHandler;
+
+	public MqReceiver(ClientHandler clientHandler) {
 		connnectionFactory = new ConnectionFactory();
 		connnectionFactory.setHost("localhost");
 		connnectionFactory.setUsername("guest");
 		connnectionFactory.setPassword("guest");
 		connnectionFactory.setPort(5672);
 		connnectionFactory.setVirtualHost("/");
+
+		this.clientHandler = clientHandler;
 	}
 
 	public void start() {
@@ -76,26 +76,41 @@ public class MqReceiver {
 		// If you want to send to a specified client, just add
 		// your own logic and ack manually
 		// Be aware that ChannelGroup is thread safe
-//		Client client = new Client();
-		
-//		NioSocketChannel clientChannel = new NioSocketChannel();
-//		clientChannel.connect("127.0.0.1:3000");
-		
-		if (EchoServerHandler.channels != null) {
-			log.info(String.format("Connected client number: %d", EchoServerHandler.channels.size()));
+		// Client client = new Client();
 
+		// NioSocketChannel clientChannel = new NioSocketChannel();
+		// clientChannel.connect("127.0.0.1:3000");
+
+		// if (EchoServerHandler.channels != null) {
+		// log.info(String.format("Connected client number: %d",
+		// EchoServerHandler.channels.size()));
+		//
+		//
+		// log.info("RECIEVED MESSAGE: " + message);
+		// ByteBuf msg = Unpooled.copiedBuffer(message.getBytes());
+		// EchoServerHandler.channels.writeAndFlush(msg).addListener(new
+		// ChannelGroupFutureListener() {
+		// public void operationComplete(ChannelGroupFuture arg0) throws
+		// Exception {
+		// // manually ack to MQ server
+		// // when message is consumed.
+		// channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+		// log.debug("Mq Receiver get message");
+		// }
+		// });
+		// }
+		
+		log.info("MQ MESSAGE Listen: " + message) ;
+
+		clientHandler.send(message).addListener(new ChannelFutureListener() {
 			
-			log.info("RECIEVED MESSAGE: " + message);
-			ByteBuf msg = Unpooled.copiedBuffer(message.getBytes());
-			EchoServerHandler.channels.writeAndFlush(msg).addListener(new ChannelGroupFutureListener() {
-				public void operationComplete(ChannelGroupFuture arg0) throws Exception {
-					// manually ack to MQ server
-					// when message is consumed.
-					channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
-					log.debug("Mq Receiver get message");
-				}
-			});
-		}
+			@Override
+			public void operationComplete(ChannelFuture arg0) throws Exception {
+				log.info(arg0.toString());
+				 channel.basicAck(delivery.getEnvelope().getDeliveryTag(), false);
+				 log.info("MQ Reciever Acknowledge Message");				
+			}
+		});
 
 	}
 }
