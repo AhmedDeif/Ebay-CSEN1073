@@ -37,9 +37,9 @@ public class ServicesInitializer extends ChannelInitializer<SocketChannel> {
         
 //		pipeLine.addLast(new HttpRequestDecoder( ) );
         
-        	pipeLine.addLast(new JsonObjectDecoder());
-//        pipeLine.addLast(new StringEncoder());
-//        pipeLine.addLast(new StringDecoder());
+//        	pipeLine.addLast(new JsonObjectDecoder());
+        pipeLine.addLast(new StringEncoder());
+        pipeLine.addLast(new StringDecoder());
 		// Uncomment the following line if you don't want to handle HttpChunks.
 //        pipeLine.addLast(new HttpObjectAggregator(1048576));
         
