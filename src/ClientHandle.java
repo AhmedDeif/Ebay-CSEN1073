@@ -1,5 +1,3 @@
-
-
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
@@ -8,13 +6,14 @@ import io.netty.handler.codec.http.HttpRequest;
 
 public class ClientHandle {
 
-	protected HttpRequest _httpRequest;
+//	protected HttpRequest _httpRequest;
+	protected String _messageRequest;
 	protected ChannelHandlerContext _ctx;
 	protected ServicesHandler _serviceHandler;
 
-	public ClientHandle(ChannelHandlerContext ctx, HttpRequest httpRequest, ServicesHandler serviceHandler) {
+	public ClientHandle(ChannelHandlerContext ctx, String messageRequest, ServicesHandler serviceHandler) {
 		_ctx = ctx;
-		_httpRequest = httpRequest;
+		_messageRequest = messageRequest;
 		_serviceHandler = serviceHandler;
 	}
 
@@ -22,8 +21,8 @@ public class ClientHandle {
 		return _ctx;
 	}
 
-	public HttpRequest getRequest() {
-		return _httpRequest;
+	public String getRequest() {
+		return _messageRequest ;
 	}
 
 	public ServicesHandler getServiceHandler() {

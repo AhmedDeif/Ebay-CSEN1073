@@ -71,9 +71,11 @@ public class ServicesHandler extends SimpleChannelInboundHandler<Object> {
 		System.err.println(" got a request: " + msg);
 		
 			log.info("SERVER GOT MESSAGE NOW SENDING TO CLIENT..");
-			ctx.writeAndFlush(msg);
+//			ctx.writeAndFlush(msg);
 //			TODO: CHECK IF MESSAGE JSON CALL EXECUTE COMMAND
-//			_controller.execRequest(new ClientHandle(ctx, request, this));
+
+			String message = (String) msg;
+			_controller.execRequest(new ClientHandle(ctx, message, this));
 
 
 //		if (msg instanceof HttpRequest) {
