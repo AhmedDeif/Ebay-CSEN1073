@@ -24,7 +24,6 @@ import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObject;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.util.CharsetUtil;
-import message.Message;
 
 public class ServicesHandler extends SimpleChannelInboundHandler<Object> {
 
@@ -73,34 +72,37 @@ public class ServicesHandler extends SimpleChannelInboundHandler<Object> {
 		
 			log.info("SERVER GOT MESSAGE NOW SENDING TO CLIENT..");
 			ctx.writeAndFlush(msg);
+//			TODO: CHECK IF MESSAGE JSON CALL EXECUTE COMMAND
+//			_controller.execRequest(new ClientHandle(ctx, request, this));
 
-		if (msg instanceof HttpRequest) {
 
-			this.request = (HttpRequest) msg;
-			HttpRequest request = this.request;
-			if (request.method().compareTo(HttpMethod.POST) == 0) {
-				// it is a POST -- nice
-				try {
-					System.err.println(" got a post: " + request.toString());					
-					_controller.execRequest(new ClientHandle(ctx, request, this));
-					synchronized (this) {
-						this.wait();
-					}
-					if (buf != null) {
-						System.err.println(" sending back" + buf.toString());
-						writeResponse(request, ctx);
-						ctx.close();
-					} else {
-						System.err.println(" Got a bad request. Closing channel ");
-						ctx.close();
-					}
-				} catch (Exception exp) {
-					exp.printStackTrace();
-				}
-			}
-			
-			//			Check for http get method
-		}
+//		if (msg instanceof HttpRequest) {
+//
+//			this.request = (HttpRequest) msg;
+//			HttpRequest request = this.request;
+//			if (request.method().compareTo(HttpMethod.POST) == 0) {
+//				// it is a POST -- nice
+//				try {
+//					System.err.println(" got a post: " + request.toString());					
+//					_controller.execRequest(new ClientHandle(ctx, request, this));
+//					synchronized (this) {
+//						this.wait();
+//					}
+//					if (buf != null) {
+//						System.err.println(" sending back" + buf.toString());
+//						writeResponse(request, ctx);
+//						ctx.close();
+//					} else {
+//						System.err.println(" Got a bad request. Closing channel ");
+//						ctx.close();
+//					}
+//				} catch (Exception exp) {
+//					exp.printStackTrace();
+//				}
+//			}
+//			
+//			//			Check for http get method
+//		}
 	}
 
 	private static void sendHttpResponse(ChannelHandlerContext ctx, HttpRequest req, FullHttpResponse res) {
