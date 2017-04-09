@@ -32,7 +32,8 @@ public class MqSender {
 //		
 
 		connnectionFactory = new ConnectionFactory();
-		connnectionFactory.setHost("localhost");
+//		connnectionFactory.setHost("localhost");
+		connnectionFactory.setHost("192.168.8.104");
 		connnectionFactory.setUsername("guest");
 		connnectionFactory.setPassword("guest");
 		connnectionFactory.setPort(5672);
