@@ -19,12 +19,12 @@ import io.netty.channel.ChannelFutureListener;
 
 public class MqConsumer  extends DefaultConsumer {
 	
-	ClientHandler _clientHandler;
+	MqClientHandler _clientHandler;
 	Channel _channel;
 	private static final Logger log = LoggerFactory.getLogger(MqConsumer.class);
 
 	
-	public MqConsumer(Channel channel, ClientHandler clientHandler) {
+	public MqConsumer(Channel channel, MqClientHandler clientHandler) {
 		super(channel);
 		_clientHandler = clientHandler;
 		_channel = channel;
@@ -32,19 +32,16 @@ public class MqConsumer  extends DefaultConsumer {
 	
 	@Override
 	public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body) {
-		
-		String messageBody = new String(body);
-		System.out.println("MESSAGE RECIEVED AT CONSUMER: " + messageBody);
-		Gson gson = new Gson();
-		
+			
 		try {
+			String messageBody = new String(body);
+			Gson gson = new Gson();
 			JsonObject messageJson = gson.fromJson(messageBody, JsonObject.class);
 			
-			System.out.println("MESSAGE TO BE SENT TO SERVER: " + messageJson);
+			
 			_clientHandler.send(messageJson).addListener(new ChannelFutureListener() {
 				@Override
 				public void operationComplete(ChannelFuture arg0) throws Exception {
-					log.info(arg0.toString());
 					 _channel.basicAck(envelope.getDeliveryTag(), false);
 					 log.info("MQ Reciever Acknowledge Message");				
 				}

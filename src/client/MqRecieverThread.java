@@ -16,11 +16,11 @@ public class MqRecieverThread extends Thread {
 	private String queueName;
 	private String routeKey;
 	private String queueTag;
-	private ClientHandler clientHandler;
+	private MqClientHandler clientHandler;
 	
 	
 	public MqRecieverThread(Connection connection, String exchangeName, String queueName, String routeKey,
-			String queueTag, ClientHandler clientHandler) {
+			String queueTag, MqClientHandler clientHandler) {
 		super();
 		this.connection = connection;
 		this.exchangeName = exchangeName;

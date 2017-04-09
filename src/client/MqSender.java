@@ -1,60 +1,52 @@
 package client;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import config.ApplicationProperties;
+
 /**
- * RabbitMQ Sender based on Spring AMQP
+ * RabbitMQ Sender 
  */
 public class MqSender {
 
 	private ConnectionFactory connnectionFactory;
 
-	private String exchangeName = "NettyMqServerListenerExchange";
-	private String queueName = "MqListenerQueue";
-	private String routeKey = "MqListenerQueue";
-	private String queueTag = "MqTag";
+	private String mqSenderHost;
+	private int mqSenderPort;
+	private String mqSenderUser;
+	private String mqSenderPassword;
+	
+	private String exchangeName;
+	private String queueName;
+	private String routeKey;
+	private String queueTag;
 
-
-	public MqSender(String exchangeName, String queueName, String routeKey, String queueTag) {
-//		String producerConfigPath
-		//		@SuppressWarnings("resource")
-//		ApplicationContext applicationContext = new FileSystemXmlApplicationContext(
-//				"classpath:" + producerConfigPath);
-//			
-//
-//		rabbitTemplate = (RabbitTemplate) applicationContext
-//				.getBean("messageSender");
-//		
-
+	public MqSender() {
+		
+		
 		connnectionFactory = new ConnectionFactory();
-//		connnectionFactory.setHost("localhost");
-		connnectionFactory.setHost("192.168.8.104");
-		connnectionFactory.setUsername("guest");
-		connnectionFactory.setPassword("guest");
-		connnectionFactory.setPort(5672);
+		connnectionFactory.setHost(ApplicationProperties.mqResponseHost);
+		connnectionFactory.setUsername(ApplicationProperties.mqResponseUser);
+		connnectionFactory.setPassword(ApplicationProperties.mqResponsePassword);
+		connnectionFactory.setPort(ApplicationProperties.mqResponsePort);
 		connnectionFactory.setVirtualHost("/");
 		
-		this.exchangeName = exchangeName;
-		this.queueName = queueName;
-		this.routeKey = routeKey;
-		this.queueTag = queueTag;
+		exchangeName = ApplicationProperties.mqResponseExchangeName;
+		queueName = ApplicationProperties.mqResponseQueueName;
+		routeKey = ApplicationProperties.mqResponseRouteKey;
+		queueTag = ApplicationProperties.mqResponseQueueTag;
 		
 		
 	}
-
+	
 	public void send(String data) {
-//		rabbitTemplate.convertAndSend("NettyMqServerListenerExchange", "", data);
-		;
-		
-		System.out.println("DATA BEFORE SENDING MQ SENDER: " + data);
-		
-		
-		
 		try {
 			Connection connection;
 			connection = connnectionFactory.newConnection();
@@ -75,8 +67,5 @@ public class MqSender {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		
-		
 	}
 }

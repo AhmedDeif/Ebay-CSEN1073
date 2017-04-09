@@ -15,7 +15,7 @@ public class ProducerQueueThread extends Thread {
 	
 	@Override
 	public void run() {
-		MqSender sender = new MqSender("NettyMqServerListenerExchange", "MqListenerQueue", "MqListenerQueue", "MqTag");
+		MqSender sender = new MqSender();
 		
 		JsonElement element = new Gson().toJsonTree(id, int.class);
 		JsonObject json = new JsonObject();
