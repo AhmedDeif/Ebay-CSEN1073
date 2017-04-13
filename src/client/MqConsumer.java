@@ -52,7 +52,9 @@ public class MqConsumer extends DefaultConsumer {
 		String messageBody = new String(body);
 		JsonObject messageJson = gson.fromJson(messageBody, JsonObject.class);
 		JsonElement propertiesJson = gson.toJsonTree(properties, BasicProperties.class);
+		JsonElement headersJson = gson.toJsonTree(properties.getHeaders(), Map.class);
 		messageJson.add("properties", propertiesJson);
+		messageJson.add("headers", headersJson);
 		return messageJson;
 	}
 
