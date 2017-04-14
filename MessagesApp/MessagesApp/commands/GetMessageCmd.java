@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
-public class GetMessage extends Command implements Runnable {
+public class GetMessageCmd extends Command implements Runnable {
 
 	@Override
 	public StringBuffer execute(Connection connection,
@@ -22,9 +22,7 @@ public class GetMessage extends Command implements Runnable {
 		  sb.append(sqlProc.getInt(1));
 		  strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 		  sqlProc.close();
-		
-		  
-			
+
 		  return strbufResult;
 	}
 	

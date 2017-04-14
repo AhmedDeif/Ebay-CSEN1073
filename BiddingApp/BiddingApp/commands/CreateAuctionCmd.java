@@ -6,6 +6,8 @@ import java.sql.Date;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 
 public class CreateAuctionCmd extends Command implements Runnable {
 
@@ -18,7 +20,14 @@ public class CreateAuctionCmd extends Command implements Runnable {
 		int pUID, pItemID, pStartPrice;
 		Date pStartDate, pEndDate;
 		
-		pUID = (int) mapUserData.get("pUID");
+		Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			pUID = Integer.parseInt(jedis.get("user_id"));
+		else
+			pUID = -1;
+		
+//		pUID = (int) mapUserData.get("pUID");
+		
 		pItemID = (int) mapUserData.get("pItemID");
 		pStartPrice = (int) mapUserData.get("pStartPrice");
 		pStartDate = (Date) mapUserData.get("pStartDate");

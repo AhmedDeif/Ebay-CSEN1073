@@ -5,13 +5,17 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 public class UpdateUserCommand extends Command implements Runnable {
 
   public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
     // SQL - NoSQL
 	  StringBuffer strbufResult;
 	  CallableStatement sqlProc;
-	  int id = Integer.parseInt((String) mapUserData.get("id"));
+//	  int id = Integer.parseInt((String) mapUserData.get("id"));
+	  Jedis jedis = new Jedis("localhost");
+	  int id = Integer.parseInt(jedis.get("user_id"));
 	  String email = (String) mapUserData.get("email");
 	  String password = (String) mapUserData.get("password");
 	  String firstName = (String) mapUserData.get("firstName");

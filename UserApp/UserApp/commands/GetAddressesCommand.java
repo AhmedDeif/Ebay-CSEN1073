@@ -5,13 +5,16 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 public class GetAddressesCommand extends Command implements Runnable {
 
   public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
 	  StringBuffer strbufResult;
 	  CallableStatement sqlProc;
-	  int UserID = Integer.parseInt((String) mapUserData.get("UserID"));
-	  
+//	  int UserID = Integer.parseInt((String) mapUserData.get("UserID"));
+	  Jedis jedis = new Jedis("localhost");
+	  int UserID = Integer.parseInt(jedis.get("user_id"));
 	  sqlProc = connection.prepareCall("{call updateUser(?,?,?,?,?,?,?,?)}");
 	  sqlProc.registerOutParameter(1, Types.INTEGER);
 	  sqlProc.setInt(1, UserID);

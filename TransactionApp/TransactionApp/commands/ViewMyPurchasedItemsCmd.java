@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 
 public class ViewMyPurchasedItemsCmd extends Command implements Runnable {
 
@@ -16,8 +18,10 @@ public class ViewMyPurchasedItemsCmd extends Command implements Runnable {
 		CallableStatement sqlProc;
 		int userID;
 		
-		userID = (int) mapUserData.get("userID");
+//		userID = (int) mapUserData.get("userID");
 		
+		Jedis jedis = new Jedis("localhost");
+		 userID = Integer.parseInt(jedis.get("user_id"));
 		
 		sqlProc = connection.prepareCall("{?=call viewMyPurchasedItems(?)}");
 		sqlProc.registerOutParameter(1, Types.INTEGER);

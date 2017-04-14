@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 
 public class ReadAllAuctionCmd extends Command implements Runnable {
 
@@ -16,7 +18,13 @@ public class ReadAllAuctionCmd extends Command implements Runnable {
 		CallableStatement sqlProc;
 		int pUID;
 		
-		pUID = (int) mapUserData.get("pUID");
+		Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			pUID = Integer.parseInt(jedis.get("user_id"));
+		else
+			pUID = -1;
+		
+//		pUID = (int) mapUserData.get("pUID");
 		
 		sqlProc = connection.prepareCall("{?=call getAuctionsForUser(?)}");
 		sqlProc.registerOutParameter(1, Types.INTEGER);

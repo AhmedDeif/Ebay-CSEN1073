@@ -7,9 +7,9 @@ import java.util.Map;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import server.ClientHandle;
-import server.ClientRequest;
-import server.ResponseCodes;
+import MessagesApp.server.ClientHandle;
+import MessagesApp.server.ClientRequest;
+import MessagesApp.server.ResponseCodes;
 
 public abstract class Command {
 

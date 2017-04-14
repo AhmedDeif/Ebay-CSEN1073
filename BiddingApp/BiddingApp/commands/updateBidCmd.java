@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 public class updateBidCmd extends Command implements Runnable {
 
 	@Override
@@ -14,7 +16,14 @@ public class updateBidCmd extends Command implements Runnable {
 		
 		String strUserId, strItemId; 
 		double strNewBidAmount;
-		strUserId = (String) mapUserData.get("user_id");
+		
+		Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			strUserId = (jedis.get("user_id"));
+		else
+			strUserId = null;
+		
+//		strUserId = (String) mapUserData.get("user_id");
 		strItemId = (String) mapUserData.get("item_id");
 		strNewBidAmount = (double) mapUserData.get("new_bid_amount");
 		
