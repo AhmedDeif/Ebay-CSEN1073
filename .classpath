@@ -24,6 +24,6 @@
 	<classpathentry kind="lib" path="libs/spring-retry-1.1.5.RELEASE.jar"/>
 	<classpathentry kind="lib" path="libs/spring-tx-4.3.7.RELEASE.jar"/>
 	<classpathentry kind="lib" path="libs/javax.json-api-1.0.jar"/>
-	<classpathentry kind="lib" path="/Users/nesreenmamdouh/Desktop/mongo-java-driver-3.4.2.jar"/>
+	<classpathentry kind="lib" path="libs/mongo-java-driver-3.4.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
