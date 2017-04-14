@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 //// Rating Cmd Nesreen
 class CreateUserRatingCmd extends Command implements Runnable {
 
@@ -16,7 +18,13 @@ class CreateUserRatingCmd extends Command implements Runnable {
                             intUserID,
                             intRating;
                             
-        intItemID =   Integer.parseInt((String)mapUserData.get( "itemID"));
+//        intItemID =   Integer.parseInt((String)mapUserData.get( "itemID"));
+        
+    	Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intItemID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intItemID = -1;
         intUserID =   Integer.parseInt((String)mapUserData.get( "userID" ));
         intRating =   Integer.parseInt((String)mapUserData.get( "rating"));
 

@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 class DeleteUserRatingCmd extends Command implements Runnable {
 
     public StringBuffer execute(Connection connection,  Map<String, Object> mapUserData ) throws Exception {
@@ -14,9 +16,17 @@ class DeleteUserRatingCmd extends Command implements Runnable {
         int                 intItemID,
                             intUserID;
 
+        
+        
         intItemID =   Integer.parseInt((String)mapUserData.get( "itemID" ));
-        intUserID =   Integer.parseInt((String)mapUserData.get( "userID" ));
+//        intUserID =   Integer.parseInt((String)mapUserData.get( "userID" ));
 
+        
+    	Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intUserID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intUserID = -1;
 
         if(intItemID <= 0 || intUserID <= 0)
            return null;

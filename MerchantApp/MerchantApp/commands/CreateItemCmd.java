@@ -13,6 +13,8 @@ import com.mongodb.DBCollection;
 import com.mongodb.MongoClient;
 import com.mongodb.bulk.WriteRequest.Type;
 
+import redis.clients.jedis.Jedis;
+
 ///////////////// START Nesreen ////////////////////////////
 //// Item Cmds Nesreen
 public class CreateItemCmd extends Command implements Runnable {
@@ -26,7 +28,13 @@ public class CreateItemCmd extends Command implements Runnable {
 		strItemName = (String) mapUserData.get("itemName");
 		strDecription = (String) mapUserData.get("description");
 		intQuantity = Integer.parseInt((String) mapUserData.get("quantity"));
-		intSellerID = Integer.parseInt((String) mapUserData.get("sellerID"));
+
+		Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intSellerID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intSellerID = -1;
+		// intSellerID = Integer.parseInt((String) mapUserData.get("sellerID"));
 		intCategoryID = Integer.parseInt((String) mapUserData.get("categoryID"));
 
 		dblPrice = Integer.parseInt((String) mapUserData.get("price"));
@@ -50,7 +58,7 @@ public class CreateItemCmd extends Command implements Runnable {
 		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 		System.out.println("@@@@ " + sqlProc.getInt(1));
 		sqlProc.close();
-		
+
 		sqlProc = connection.prepareCall("{call findcategoryname(?)}");
 		sqlProc.registerOutParameter(1, Types.VARCHAR);
 		sqlProc.setInt(1, intCategoryID);
@@ -62,7 +70,7 @@ public class CreateItemCmd extends Command implements Runnable {
 		// To connect to mongodb server
 		MongoClient mongoClient = new MongoClient("localhost", 27017);
 		// Now connect to your databases
-		 DB db = mongoClient.getDB("EbaySearch");
+		DB db = mongoClient.getDB("EbaySearch");
 		System.out.println("Connect to database successfully");
 
 		// insert item in mongoDb
@@ -70,8 +78,8 @@ public class CreateItemCmd extends Command implements Runnable {
 		System.out.println("Collection mycol selected successfully");
 
 		BasicDBObject doc = new BasicDBObject("itemName", strItemName).append("price", dblPrice)
-				.append("description", strDecription).append("quantity", intQuantity)
-				.append("seller",intSellerID).append("categoryName", categoryName).append("itemId", itemId);
+				.append("description", strDecription).append("quantity", intQuantity).append("seller", intSellerID)
+				.append("categoryName", categoryName).append("itemId", itemId);
 
 		coll.insert(doc);
 

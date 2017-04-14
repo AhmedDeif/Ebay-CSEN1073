@@ -1,3 +1,36 @@
+create or replace function addUser(
+    _firstName         VARCHAR(100),
+    _lastName          VARCHAR(100),
+    _email             VARCHAR(100),
+    _usr_password      VARCHAR(100)
+)
+returns INT as'
+
+declare
+    ltimeCurrent    TIMESTAMP;
+    lID             INT;
+
+begin
+    select into lID  nextval(''seq_Items_ID'');
+    select into ltimeCurrent ''now'';
+
+    insert  into Users
+                (ID,firstName,lastName,email,usr_password,creationTime)
+            values(
+                lID,
+                _firstName,
+                _lastName,
+                _email,
+                _usr_password,
+                ltimeCurrent
+            ); 
+            
+    Return lID;
+
+
+end;
+' language 'plpgsql';
+
 -------------------------------------------------------------------------------------------------------------------------------------------------
 -- ITEM FUNCTIONS
 create or replace function createItem(

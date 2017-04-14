@@ -67,7 +67,7 @@ public class Dispatcher {
 		while (enumKeys.hasMoreElements()) {
 			strActionName = (String) enumKeys.nextElement();
 			strClassName = (String) prop.get(strActionName);
-			Class<?> innerClass = Class.forName("commands." + strClassName);
+			Class<?> innerClass = Class.forName("SearchApp.server.commands." + strClassName);
 			_htblCommands.put(strActionName, innerClass);
 		}
 	}

@@ -7,6 +7,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 class FindItemUserRatingCmd extends Command implements Runnable {
 
     public StringBuffer execute(Connection connection,  Map<String, Object> mapUserData ) throws Exception {
@@ -15,10 +17,17 @@ class FindItemUserRatingCmd extends Command implements Runnable {
         CallableStatement   sqlProc;
         int                 intItemID,nSQLResult,
                             intUserID;
+        
+    	Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intUserID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intUserID = -1;
+        
     	System.out.println("ana hena34343444334 ");
 
         intItemID =   Integer.parseInt((String)mapUserData.get( "itemID"));
-        intUserID =   Integer.parseInt((String)mapUserData.get( "userID"));
+//        intUserID =   Integer.parseInt((String)mapUserData.get( "userID"));
 
         if(intItemID <= 0 || intUserID <= 0 )
             return null;

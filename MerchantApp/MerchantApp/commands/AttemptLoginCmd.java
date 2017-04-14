@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import SearchApp.server.Cache;
-class AttemptLoginCmd extends Command implements Runnable {
+public class AttemptLoginCmd extends Command implements Runnable {
 
     public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
 

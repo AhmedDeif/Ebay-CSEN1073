@@ -1,4 +1,14 @@
-
+CREATE TABLE IF NOT EXISTS Users (
+	ID                     									INT NOT NULL DEFAULT NEXTVAL('seq_Users_ID'),
+	firstName                  								VARCHAR(100) NOT NULL,
+	lastName                  								VARCHAR(100) NOT NULL,
+	email                  									VARCHAR(100) NOT NULL,
+	usr_password                  							VARCHAR(100) NOT NULL,
+	gender                  								VARCHAR(100),
+	dateOfBirth                  							DATE,
+	creationTime    		    							TIMESTAMP NOT NULL,
+    CONSTRAINT const_pk_Users_ID                			PRIMARY KEY (ID)
+);
 
 --
 CREATE SEQUENCE seq_Items_ID  MINVALUE 2 START WITH 2;

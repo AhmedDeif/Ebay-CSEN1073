@@ -399,6 +399,22 @@ function search(search_txt){
   // sendRequest( strJSON, attemptLoginResponse );
   console.log(strJSON);
 }
+
+function createUser(firstName, lastName, email,password){
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "createUser";
+   var gsRequestData       =   new Object( );
+   gsRequestData.firstName     =   firstName;
+   gsRequestData.lastName  =   lastName;
+   gsRequestData.email     =   email;
+   gsRequestData.password     =   password;
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+
+
 //----------Rana's part ----------
 
 // To start sending messages:
@@ -417,10 +433,10 @@ function search(search_txt){
   // createItem('iphone 7s', '100', 'item created','1', '5', '1');
   // createItem('iphone 7s plus', '90', 'item created','1', '5', '1');
   // createItem('macbook pro', '950', 'item created','1', '5', '1');
-  // createItem('ipad pro', '70', 'item created','1', '5', '1');
+  createItem('ipad pro', '70', 'item created','1', '5', '1');
 
 
-editItem('24','iphone 6', '450', '1', 'item edited', '1');
+// editItem('24','iphone 6', '450', '1', 'item edited', '1');
 // deleteItem('25');
 // findItem('4');
 // viewItem();
@@ -450,7 +466,7 @@ editItem('24','iphone 6', '450', '1', 'item edited', '1');
 // findItemCategory('3','3');
 // viewCategory();
 // search('pro');
-
+// createUser("nana", "rana", "nana@rana.com", "password");
 
       
 

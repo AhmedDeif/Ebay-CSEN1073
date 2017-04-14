@@ -47,6 +47,7 @@ class Controller implements ParseListener {
 					|| strAction.equalsIgnoreCase("editCategory") || strAction.equalsIgnoreCase("createItemCategory")  
 					|| strAction.equalsIgnoreCase("deleteCategory") || strAction.equalsIgnoreCase("findCategory")
 					|| strAction.equalsIgnoreCase("findItemCategory") || strAction.equalsIgnoreCase("viewCategory")
+					|| strAction.equalsIgnoreCase("createUser")
 					) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {

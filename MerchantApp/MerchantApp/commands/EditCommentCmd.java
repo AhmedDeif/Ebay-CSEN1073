@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 class EditCommentCmd extends Command implements Runnable {
 
     public StringBuffer execute(Connection connection,  Map<String, Object> mapUserData ) throws Exception {
@@ -15,10 +17,16 @@ class EditCommentCmd extends Command implements Runnable {
         int                 intItemID,
                             intCommentID,
                             intUserID;
+        
+    	Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intUserID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intUserID = -1;
                             
         strComment_text    =   (String)mapUserData.get( "comment_text" );
         intItemID =   Integer.parseInt((String)mapUserData.get( "itemID"));
-        intUserID =   Integer.parseInt((String)mapUserData.get( "userID" ));
+//        intUserID =   Integer.parseInt((String)mapUserData.get( "userID" ));
         intCommentID =   Integer.parseInt((String)mapUserData.get( "commentID"));
 
 

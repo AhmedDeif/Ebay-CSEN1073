@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import redis.clients.jedis.Jedis;
+
 //// Cart Cmd
 
 class CreateCartCmd extends Command implements Runnable {
@@ -15,8 +17,15 @@ class CreateCartCmd extends Command implements Runnable {
         CallableStatement   sqlProc;
         int                 intUserID;
                             
-        intUserID    =   Integer.parseInt((String) mapUserData.get( "userID") );
-
+//        intUserID    =   Integer.parseInt((String) mapUserData.get( "userID") );
+    	Jedis jedis = new Jedis("localhost");
+		if (jedis.get("user_id") != null)
+			intUserID = Integer.parseInt(jedis.get("user_id"));
+		else
+			intUserID = -1;
+        
+        
+//    	intUserID = Integer.parseInt(jedis.get("user_id"));
         if(intUserID <= 0)
            return null;
 
