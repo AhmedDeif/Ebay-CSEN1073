@@ -330,6 +330,17 @@ end;
 
 _____________________________
 
+create or replace function getMessages(
+	pThreadID INT
+)
+    returns TABLE(ID INT, messageString varchar(255), receiverID INT, senderID)
+
+begin
+	return query
+		select ID, messageString, receiverID where threadID = pThreadID;
+end;
+‘ language ‘plpgsql’;
+
 ----------------------------- Create an Auction -----------------------------
 
 -- select createAuction(4, 1, 500, to_date('10 Dec 2017', 'DD Mon YYYY'), to_date('20 Dec 2017', 'DD Mon YYYY'));
@@ -681,6 +692,181 @@ end;
 
 -------------------------------------------------------------
 
+create or replace function addAddress(
+  pUserID INT,
+  pAddress VARCHAR(300)
+)
+returns INT as'
+
+declare
+  lID INT;
+
+begin
+  select into lID nextval(''seq_Addresses_ID'');
+  insert into Addresses (ID, address,userID) values (lID, pAddress,pUserID);
+
+  return lID;
+end;
+' language 'plpgsql';
+
+
+
+-------------------------------------------------------------
+
+create or replace getAddresses(
+  pUserID INT
+)
+
+returns TABLE(ID INT, address VARCHAR(300)) as'
+
+begin
+  return query
+    select ID, address from Addresses where userID = pUserID;
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace getAddress(
+  pUserID INT,
+  pAddressID INT
+)
+
+returns TABLE(ID INT, address VARCHAR(300)) as'
+
+begin
+  return query
+    select ID, address from Addresses where userID = pUserID and ID = pAddressID;
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace deleteAddress(
+  pUserID INT,
+  pAddressID INT
+)
+returns INT as'
+
+begin
+  delete from Addresses where userID = pUserID and ID = pAddressID
+
+  return 0
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function updateAddress(
+  pUserID INT,
+  pAddressID INT,
+  pAddress VARCHAR(300)
+)
+returns INT as'
+
+begin
+  update Addresses
+    set address = pAddress
+    where userID = pUserID and ID = pAddressID
+
+  return lID;
+end;
+' language 'plpgsql';
+
+——————————————————————————————
+
+create or replace function getUser (
+
+pUserID INT
+)
+
+returns TABLE(ID INT , email VARCHAR(100), passwordHash VARCHAR(120), oldPassword VARCHAR(30), firstName VARCHAR(30), lastName VARCHAR(30),
+ gender VARCHAR (10), dob DATE, picturePath VARCHAR(250),lastLogin TIMESTAMP ,lastPasswordChange TIMESTAMP,lastAccess TIMESTAMP,
+disabled BOOLEAN,resetPassword BOOLEAN, question VARCHAR(200), answer VARCHAR(200), phone VARCHAR(30), verified BOOLEAN,
+ verificationCode VARCHAR(5), creationTime TIMESTAMP) as'
+
+begin
+
+return query
+  select * from Users where userID = pUserID;
+
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+
+create or replace function updateUser(
+  pUserID INT,
+  pEmail VARCHAR(100),
+  pPasswordHash VARCHAR (120),
+  pOldPassword VARCHAR (30),
+  pFirstName VARCHAR (30),
+  pLastName VARCHAR (30),
+  pGender VARCHAR(10),
+  pDob DATE,
+  pPicturePath VARCHAR(250),
+  pLastLogin TIMESTAMP,
+  pLastPasswordChange TIMESTAMP,
+  pLastAccess TIMESTAMP,
+  pDisabled BOOLEAN,
+  pResetPassword BOOLEAN,
+  pQuestion VARCHAR(200),
+  pAnswer VARCHAR (200),
+  pPhone VARCHAR (30),
+  pVerified BOOLEAN,
+  pVerificationCode VARCHAR(5),
+  pCreationTime TIMESTAMP
+  )
+
+
+)
+returns INT as'
+
+begin
+  update Users
+    set name = pName
+        email = pEmail
+        passwordHash = pPasswordHash
+        oldPassword = pOldPassword
+        firstName = pFirstName
+        lastName = pLastName
+        gender = pGender
+        dob = pDob
+        picturePath = pPicturePath
+        lastLogin = pLastLogin
+        lastPasswordChange = pLastPasswordChange
+        lastAccess = pLastAccess
+        disabled = pDisabled
+        resetPassword = pResetPassword
+        question = pQuestion
+        answer = pAnswer
+        phone = pPhone
+        verified = pVerified
+        verificationCode = pVerificationCode
+        creationTime = pCreationTime
+
+
+    where userID = pUserID
+
+  return lID;
+end;
+' language 'plpgsql';
+-------------------------------------------------------------
+
+create or replace function deleteUser (
+pUserID INT
+)
+returns INT as'
+
+begin
+delete from Users where userID = pUserID
+
+return 0
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
 
     
 
