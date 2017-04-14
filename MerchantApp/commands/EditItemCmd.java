@@ -5,7 +5,12 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
-class EditItemCmd extends Command implements Runnable {
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+
+public class EditItemCmd extends Command implements Runnable {
 
 	public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
 
@@ -39,6 +44,28 @@ class EditItemCmd extends Command implements Runnable {
 		sb.append(sqlProc.getInt(1));
 		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 		sqlProc.close();
+
+		// Mongo connection
+		// To connect to mongodb server
+		MongoClient mongoClient = new MongoClient("localhost", 27017);
+		// Now connect to your databases
+		DB db = mongoClient.getDB("EbaySearch");
+		System.out.println("Connect to database successfully");
+
+		// insert item in mongoDb
+		DBCollection coll = db.getCollection("items");
+		System.out.println("Collection mycol selected successfully");
+
+		// db.items.find({"seller" : {"id":1}})
+		BasicDBObject whereQuery = new BasicDBObject();
+		whereQuery.put("itemId", intItemID);
+		BasicDBObject updateDocument = new BasicDBObject();
+		updateDocument.put("itemName", strItemName);
+		updateDocument.put("price", dblPrice);
+		updateDocument.put("description", strDecription);
+		updateDocument.put("quantity", intQuantity);
+		updateDocument.put("seller", new BasicDBObject("id", intSellerID));
+		coll.update(whereQuery, updateDocument);
 
 		return strbufResult;
 	}

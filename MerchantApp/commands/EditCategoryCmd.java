@@ -4,8 +4,11 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
-
-class EditCategoryCmd extends Command implements Runnable {
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+public class EditCategoryCmd extends Command implements Runnable {
 
 	public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
 
@@ -13,6 +16,7 @@ class EditCategoryCmd extends Command implements Runnable {
 		CallableStatement sqlProc;
 		String strCategoryName;
 		int intID;
+		String oldName;
 
 		strCategoryName = (String) mapUserData.get("categoryName");
 		intID = Integer.parseInt((String) mapUserData.get("id"));
@@ -23,15 +27,17 @@ class EditCategoryCmd extends Command implements Runnable {
 			return null;
 
 		sqlProc = connection.prepareCall("{call editCategory(?,?)}");
-		sqlProc.registerOutParameter(1, Types.INTEGER);
+		sqlProc.registerOutParameter(1, Types.VARCHAR);
 		sqlProc.setString(2, strCategoryName);
 		sqlProc.setInt(1, intID);
 
 		sqlProc.execute();
 		StringBuffer sb = new StringBuffer();
-		sb.append(sqlProc.getInt(1));
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
+		sb.append(sqlProc.getString(1));
+		strbufResult = makeJSONResponseEnvelope(1, null, sb);
+		oldName = sqlProc.getString(1);
 		sqlProc.close();
+
 
 		return strbufResult;
 	}

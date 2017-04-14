@@ -5,6 +5,7 @@ import java.util.Hashtable;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.SynchronousQueue;
 
 import com.zaxxer.hikari.HikariDataSource;
 
@@ -33,15 +34,23 @@ public class Dispatcher {
 		Object cmdInstance = cmdClass.newInstance();
 		cmd = (Command) cmdInstance;
 		cmd.init(_hikariDataSource, clientHandle, clientRequest);
+		System.out.println(cmd.toString());
 		_threadPoolCmds.execute((Runnable) cmd);
 	}
 
 	protected void loadHikari(String strAddress, int nPort, String strDBName, String strUserName, String strPassword) {
 
+		System.out.println("Loading hikari");
 		_hikariDataSource = new HikariDataSource();
+//		String url = "jdbc:postgresql://" + strAddress + ":" + nPort + "/" + strDBName;
+//		System.out.println(url);
 		_hikariDataSource.setJdbcUrl("jdbc:postgresql://" + strAddress + ":" + nPort + "/" + strDBName);
+//		_hikariDataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/ebay");
 		_hikariDataSource.setUsername(strUserName);
 		_hikariDataSource.setPassword(strPassword);
+//		_hikariDataSource.setUsername("postgres");
+//		_hikariDataSource.setPassword("2428");
+		_hikariDataSource.setInitializationFailFast(true);
 	}
 
 	protected void loadCommands() throws Exception {
@@ -66,7 +75,9 @@ public class Dispatcher {
 	}
 
 	public void init() throws Exception {
-		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
+		System.out.println(ApplicationProperties.appHost);
+//		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
+		loadHikari("localhost", 5432, "ebay","postgres", "41319");
 		loadThreadPool();
 		loadCommands();
 

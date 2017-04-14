@@ -23,6 +23,7 @@ public abstract class Command {
 			_hikariDataSource = hikariDataSource;
 			_clientRequest = clientRequest;
 			_clientHandle = clientHandle;
+			System.out.println(this.getClass().getName());
 		}
 
 		public void run() {

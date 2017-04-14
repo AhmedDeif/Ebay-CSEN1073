@@ -337,16 +337,18 @@ BEGIN
 END;
 ' language 'plpgsql';
 
-create or replace function findCategoryByName(
-   _categoryName             INT
+create or replace function findCategoryName(
+   _categoryID             INT
    )
-returns int as'
+returns VARCHAR as'
 
+Declare _name VARCHAR;
 BEGIN
-   SELECT id FROM Categories where categoryname = _categoryName;
-    RETURN id;
+   SELECT categoryname into _name  FROM Categories where id = _categoryID;
+    RETURN _name;
 
 END;
+
 ' language 'plpgsql';
 
 
