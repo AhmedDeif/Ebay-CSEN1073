@@ -1,8 +1,9 @@
 import { Router } from 'express'
-import { default as Amqp } from 'amqplib'
-
+import {
+    default as Amqp
+} from 'amqplib'
 const router = new Router()
-
+import uuidV4 from 'uuid/v4'
 /**
  * @apiDefine master Master access only
  * You must pass `access_token` parameter or a Bearer Token authorization header
@@ -31,18 +32,28 @@ console.log({ Amqp });
 let connection = Amqp.connect("amqp://ebay:ebay@172.17.0.2:5672")
 
 console.log({ connection });
-
+let data = { "action": "createItem", "data": { "itemName": "AAAA pro", "price": "70", "desc": "item created", "categoryID": "1", "quantity": "5", "sellerID": "1" } };
 connection.then((conn) => {
-    return conn.createChannel();
-  }).then((channel) => {
-    return channel.assertQueue('EbayMerchantsRequest').then(function (ok) {
-      let data = {"action":"createItem","data":{"itemName":"AAAA pro","price":"70","desc":"item created","categoryID":"1","quantity":"5","sellerID":"1"}};
-      return channel.sendToQueue('EbayMerchantsRequest', new Buffer(JSON.stringify(data)));
-    });
-  })
-  // connection.on('error', (error) => {
-  //   console.log("CANNOT CONNECT TO MQ ", error );
-  // })
+        return conn.createChannel();
+    }).then((channel) => {
+        let correlationId = uuid.v4();
+        return when.all([
+            channel.assertQueue('EbayMerchantsRequest'),
+            // ch.assertExchange('bar'),
+            // ch.bindQueue('foo', 'bar', 'baz'),
+            channel.sendToQueue('EbayMerchantsRequest', new Buffer(JSON.stringify(data)), { correlationId }),
+            ch.consume('EbayMerchantsRequest', function({ content, fields, properties }) {
+                let recievedCorrId = properties.correlationId;
+                if (recievedCorrId === correlationId) {
+                    channel.cancel();
+                }
+
+            })
+        ]);
+    })
+    // connection.on('error', (error) => {
+    //   console.log("CANNOT CONNECT TO MQ ", error );
+    // })
 
 // connection.then( (connect) => {
 //   console.log("MQ CONNECTION READY");
