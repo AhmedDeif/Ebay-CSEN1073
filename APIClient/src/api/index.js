@@ -3,7 +3,9 @@ import {
     default as Amqp
 } from 'amqplib'
 const router = new Router()
-import uuidV4 from 'uuid/v4'
+import uuid from 'uuid/v4'
+import when from 'when';
+
 /**
  * @apiDefine master Master access only
  * You must pass `access_token` parameter or a Bearer Token authorization header
@@ -36,16 +38,19 @@ let data = { "action": "createItem", "data": { "itemName": "AAAA pro", "price": 
 connection.then((conn) => {
         return conn.createChannel();
     }).then((channel) => {
-        let correlationId = uuid.v4();
+        let correlationId = uuid();
         return when.all([
             channel.assertQueue('EbayMerchantsRequest'),
             // ch.assertExchange('bar'),
             // ch.bindQueue('foo', 'bar', 'baz'),
             channel.sendToQueue('EbayMerchantsRequest', new Buffer(JSON.stringify(data)), { correlationId }),
-            ch.consume('EbayMerchantsRequest', function({ content, fields, properties }) {
+            channel.consume('EbayMerchantsResponse', function({ content, fields, properties }) {
                 let recievedCorrId = properties.correlationId;
+                console.log("RECIVED MESSAGE: ", {content, fields, properties});
                 if (recievedCorrId === correlationId) {
-                    channel.cancel();
+                    console.log("CORRECT MESSAGE: ", {content});
+
+                    channel.cancel(fields.consumerTag);
                 }
 
             })
