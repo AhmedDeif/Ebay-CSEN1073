@@ -237,9 +237,9 @@ public class HAProxyController {
     public static void main (String [] args) {
     	
     	ArrayList<Instance> instances = new ArrayList<Instance>();
-    	Instance a1 = new Instance(3200, "192.168.1.18", "instance1");
-    	Instance a2 = new Instance(3001, "127.0.0.1", "instance2");
-    	Instance a3 = new Instance(3002, "127.0.0.1", "instance3");
+    	Instance a1 = new Instance(3200, "172.17.0.2", "instance1");
+    	Instance a2 = new Instance(3001, "172.17.0.3", "instance2");
+    	Instance a3 = new Instance(3002, "172.17.0.4", "instance3");
     	instances.add(a1);
     	instances.add(a2);
     	instances.add(a3);

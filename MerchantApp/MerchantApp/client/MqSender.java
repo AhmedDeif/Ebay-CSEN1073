@@ -16,7 +16,7 @@ import MerchantApp.config.ApplicationProperties;
  */
 public class MqSender {
 
-	private ConnectionFactory connnectionFactory;
+	public ConnectionFactory connnectionFactory;
 
 	private String mqSenderHost;
 	private int mqSenderPort;
