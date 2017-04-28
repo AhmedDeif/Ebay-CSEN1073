@@ -5,6 +5,7 @@ import {
 const router = new Router()
 import uuid from 'uuid/v4'
 import when from 'when';
+import {StringDecoder} from 'string_decoder';
 
 /**
  * @apiDefine master Master access only
@@ -30,60 +31,37 @@ import when from 'when';
  * @apiParam {String[]} [fields] Fields to be returned.
  */
 
-console.log({ Amqp });
-let connection = Amqp.connect("amqp://ebay:ebay@172.17.0.2:5672")
+  let connection = Amqp.connect("amqp://ebay:ebay@172.17.0.2:5672")
+  console.log({ connection });
+  // let data = { "action": "createItem", "data": { "itemName": "AAAA pro", "price": "70", "desc": "item created", "categoryID": "1", "quantity": "5", "sellerID": "1" } };
+  let data = { "action": "createUser", "data": { "firstName": "test user", "lastName": "aa", "email": "test@test.com", "password": "123" } };
+  connection.then((conn) => {
+          return conn.createChannel();
+      }).then((channel) => {
+              for (let i = 0; i < 1; i++) {
+                let correlationId = uuid();
+                when.all([
+                  channel.assertQueue('EbayMerchantsRequest'),
+                  channel.assertQueue('EbayMerchantsResponse'),
 
-console.log({ connection });
-let data = { "action": "createItem", "data": { "itemName": "AAAA pro", "price": "70", "desc": "item created", "categoryID": "1", "quantity": "5", "sellerID": "1" } };
-connection.then((conn) => {
-        return conn.createChannel();
-    }).then((channel) => {
-        let correlationId = uuid();
-        return when.all([
-            channel.assertQueue('EbayMerchantsRequest'),
-            // ch.assertExchange('bar'),
-            // ch.bindQueue('foo', 'bar', 'baz'),
-            channel.sendToQueue('EbayMerchantsRequest', new Buffer(JSON.stringify(data)), { correlationId }),
-            channel.consume('EbayMerchantsResponse', function({ content, fields, properties }) {
-                let recievedCorrId = properties.correlationId;
-                console.log("RECIVED MESSAGE: ", {content, fields, properties});
-                if (recievedCorrId === correlationId) {
-                    console.log("CORRECT MESSAGE: ", {content});
+                  channel.sendToQueue('EbayMerchantsRequest', new Buffer(JSON.stringify(data)), { correlationId }),
+                  channel.consume('EbayMerchantsResponse', (message) => {
+                    let { content, fields, properties } = message;
+                    let recievedCorrId = properties.correlationId;
+                    let decoder = new StringDecoder('utf8');
+                    content = decoder.write(content);
+                    if (recievedCorrId === correlationId) {
+                      console.log("CORRECT MESSAGE: ", {message});
+                      channel.ack(message);
+                    } else {
+                      console.log("Discarded MESSAGE");
+                      channel.nack(message);
+                    }
 
-                    channel.cancel(fields.consumerTag);
-                }
-
-            })
-        ]);
-    })
-    // connection.on('error', (error) => {
-    //   console.log("CANNOT CONNECT TO MQ ", error );
-    // })
-
-// connection.then( (connect) => {
-//   console.log("MQ CONNECTION READY");
-//
-//   connection.exchange('EbayMerchantsExchange', (merchantsExchange) => {
-//     connection.queue('EbayMerchantsRequest', (reqQueue) => {
-//       reqQueue.bind('EbayMerchantsExchange');
-//       connection.queue('EbayMerchantsResponse', (resQueue) => {
-//         resQueue.bind('EbayMerchantsExchange');
-//
-//         data = {"action":"createItem","data":{"itemName":"AAAA pro","price":"70","desc":"item created","categoryID":"1","quantity":"5","sellerID":"1"}};
-//         merchantsExchange.publish('EbayMerchantsRequest', data, (delivered) => {
-//           console.log("MESSAGE delivered? ", delivered);
-//
-//         });
-//
-//         resQueue.subscribe(function (message, headers, deliveryInfo, messageObject) {
-//           console.log('Got a message with routing key ' + deliveryInfo.routingKey);
-//           res.send('OK');
-//         });
-//       })
-//     })
-//   })
-// })
-//
+                  })
+                ]);
+              }
+      })
 
 router.get("/", (req, res, next) => {
 

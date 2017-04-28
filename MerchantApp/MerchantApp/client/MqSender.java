@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.concurrent.TimeoutException;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
@@ -46,7 +47,7 @@ public class MqSender {
 		
 	}
 	
-	public void send(String data) {
+	public void send(String data, BasicProperties properties) {
 		try {
 			Connection connection;
 			connection = connnectionFactory.newConnection();
@@ -55,7 +56,9 @@ public class MqSender {
 			channel.queueDeclare(queueName, true, false, false, null);
 			channel.queueBind(queueName, exchangeName, routeKey);
 			
-			channel.basicPublish(exchangeName, routeKey, null , data.getBytes());
+			channel.basicPublish(exchangeName, routeKey, properties , data.getBytes());
+			
+			System.out.println("PUBLISHED RESPONSE: " + data);
 			
 			channel.close();
 			connection.close();

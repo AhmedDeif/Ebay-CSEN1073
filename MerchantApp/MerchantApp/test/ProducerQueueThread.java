@@ -31,7 +31,7 @@ public class ProducerQueueThread extends Thread {
 		
 
 		System.out.println("DATA TO SEND: " + jsonString);
-		sender.send(jsonString);
+		sender.send(jsonString, null);
 		
 		return;
 	}

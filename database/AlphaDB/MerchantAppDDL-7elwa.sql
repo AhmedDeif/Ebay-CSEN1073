@@ -1,3 +1,4 @@
+CREATE SEQUENCE seq_Users_ID  MINVALUE 1 START WITH 1;
 CREATE TABLE IF NOT EXISTS Users (
 	ID                     									INT NOT NULL DEFAULT NEXTVAL('seq_Users_ID'),
 	firstName                  								VARCHAR(100) NOT NULL,
@@ -15,7 +16,7 @@ CREATE SEQUENCE seq_Items_ID  MINVALUE 2 START WITH 2;
 CREATE TABLE IF NOT EXISTS Items (
 	ID                     									INT NOT NULL DEFAULT NEXTVAL('seq_Items_ID'),
 	itemName                  								VARCHAR(100) NOT NULL,
-	price               									DOUBLE(10,2)  NOT NULL,
+	price               									DECIMAL(10)  NOT NULL,
 	description       		    							VARCHAR(500),
 	sellerID												INT NOT NULL,
 	quantity												INT NOT NULL,
@@ -90,7 +91,6 @@ CREATE TABLE IF NOT EXISTS User_Rating (
 	CONSTRAINT const_fk_user_rating_userID  				FOREIGN KEY(userID) REFERENCES Users(ID) ON DELETE CASCADE,
 	CONSTRAINT const_fk_user_rating_itemID  				FOREIGN KEY(itemID) REFERENCES Items(ID) ON DELETE CASCADE,
 	CONSTRAINT chk_rating CHECK (rating > 0 and rating <6)
-
 
 );
 
