@@ -66,12 +66,13 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 	protected void messageReceived(ChannelHandlerContext ctx, Object msg) {
 
 		
-			log.info("SERVER GOT MESSAGE NOW PROCCESSING..");
+			log.info("SERVER GOT MESSAGE NOW PROCCESSING.." + ", Type: " + msg.getClass().getName());
 
 			try {
 				String message = (String) msg;
 				
-				log.info("MESSAGE TO BE PROCESSED: " + message);
+				log.info("MESSAGE TO BE PROCESSED: " + message +  "\n");
+
 				_controller.execRequest(new ClientHandle(ctx, message, this));
 				
 				synchronized (this) {
@@ -80,12 +81,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 				
 				if (buf != null) {
 					System.err.println(" sending back" + buf.toString());
-					ChannelFuture f = ctx.channel().writeAndFlush(buf);
-
-					ctx.close();
+					ChannelFuture f = ctx.writeAndFlush(buf);
 				} else {
-					System.err.println(" Got a bad request. Closing channel ");
-					ctx.close();
+					System.err.println(" Got a bad request");
+//					ctx.
 				}	
 			} catch (Exception exp) {
 				exp.printStackTrace();

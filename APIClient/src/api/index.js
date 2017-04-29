@@ -38,7 +38,8 @@ import {StringDecoder} from 'string_decoder';
   connection.then((conn) => {
           return conn.createChannel();
       }).then((channel) => {
-              for (let i = 0; i < 1; i++) {
+              for (let i = 0; i < 10; i++) {
+              let data = { "action": "createUser", "data": { "firstName": `test user ${i}`, "lastName": `last ${i}`, "email": `test${i}@test.com`, "password": "123" } };
                 let correlationId = uuid();
                 when.all([
                   channel.assertQueue('EbayMerchantsRequest'),
