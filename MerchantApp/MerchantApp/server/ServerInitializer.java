@@ -6,6 +6,7 @@ import MerchantApp.server.ServerHandler;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.socket.SocketChannel;
+import io.netty.handler.codec.bytes.ByteArrayDecoder;
 import io.netty.handler.codec.http.cors.CorsConfig;
 import io.netty.handler.codec.json.JsonObjectDecoder;
 import io.netty.handler.codec.string.StringDecoder;
@@ -31,8 +32,9 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
      
         ChannelPipeline pipeLine = socChannel.pipeline( );
 
-        pipeLine.addLast(new StringEncoder());
+        pipeLine.addLast(new ByteArrayDecoder());
         pipeLine.addLast(new StringDecoder());
+        pipeLine.addLast(new StringEncoder());
         pipeLine.addLast("2", new ServerHandler( _controller ) );
         
 
