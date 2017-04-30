@@ -87,6 +87,7 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 					
 				} else {
 					System.err.println(" Got a bad request");
+					
 //					ctx.
 				}	
 			} catch (Exception exp) {
