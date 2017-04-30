@@ -81,7 +81,10 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 				
 				if (buf != null) {
 					System.err.println(" sending back" + buf.toString());
-					ChannelFuture f = ctx.writeAndFlush(buf);
+					String outboundMessage = buf.toString();
+					outboundMessage += "\r\n";
+					ChannelFuture f = ctx.writeAndFlush(outboundMessage);
+					
 				} else {
 					System.err.println(" Got a bad request");
 //					ctx.
