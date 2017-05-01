@@ -273,3 +273,600 @@ begin
 	return 0;
 end;
 ' language 'plpgsql';
+
+create or replace function sendMessage(
+   pMessage VARCHAR(255),
+   pSenderID INT,
+   pReceiverID INT
+)
+
+return INT as'
+
+declare
+    ltimeCurrent   TIMESTAMP;
+    lMessageID     INT;
+    lThreadID      INT;
+
+begin
+    select into ltimeCurrent ''now'';
+
+    select into lThreadID from Threads where userOneID = pSenderID and userTwoID = pReceiverID or userOneID = pReceiverID and userTwoID = pSenderID;
+    
+    select into lMessageID  nextval(''seq_msg_ID'');
+
+    if(lThreadID is  null) then
+       select into lThreadID nextval(''seq_thread_ID'');
+       insert into Threads values(lThreadID,pReceiverID,pSenderID);
+    end if;
+
+    insert into Messages values(lMessageID,lThreadID,pMessage,pReceiverID,pSenderID,ltimeCurrent);
+
+    return lMessageID;
+end;
+' language 'plpgsql';
+
+_____________________________
+
+create or replace getThread(
+   pUserOneID INT,
+   pUserTwoID INT
+)
+
+return INT as'
+
+declare
+    lThreadID INT;
+
+begin
+    select into lThreadID from Threads where userOneID = pSenderID and userTwoID = pReceiverID or userOneID = pReceiverID and userTwoID = pSenderID;
+
+    if(lThreadID is null) then
+      return -401;
+    end if;
+
+    return lThreadID;
+end;
+' language 'plpgsql';
+
+_____________________________
+
+create or replace function getMessages(
+	pThreadID INT
+)
+    returns TABLE(ID INT, messageString varchar(255), receiverID INT, senderID)
+
+begin
+	return query
+		select ID, messageString, receiverID where threadID = pThreadID;
+end;
+‘ language ‘plpgsql’;
+
+----------------------------- Create an Auction -----------------------------
+
+-- select createAuction(4, 1, 500, to_date('10 Dec 2017', 'DD Mon YYYY'), to_date('20 Dec 2017', 'DD Mon YYYY'));
+
+CREATE OR REPLACE FUNCTION createAuction(
+    pUID        INTEGER,
+    pItemID     INTEGER,
+    pStartPrice INTEGER,
+    pStartDate  DATE,
+    pEndDate    DATE
+    ) 
+RETURNS INT AS'
+DECLARE
+    lTimeCurrent TIMESTAMP;
+    lUID        INTEGER;
+    lItemID       INTEGER;
+BEGIN 
+    SELECT into lUID id FROM Users WHERE id = pUID;
+
+    -- User does not exist
+    if(lUID is null) then
+        return -401;
+    end if;
+
+    SELECT into lTimeCurrent  ''now'';
+    -- Auction Start Date must be after the current time.
+    if(pStartDate < lTimeCurrent) then
+        return -401;
+    end if;
+
+    SELECT into lItemID id FROM Item WHERE id = pItemID AND users_id = lUID;
+
+    -- Item does not exist
+    if(lItemID is null) then
+        return -401;
+    end if;
+
+    INSERT into Auction(
+        item_id, start_date, end_date, min_price)
+            values(
+                lItemID,
+                pStartDate,
+                pEndDate,
+                pStartPrice
+                );
+    return 200;
+END; 
+' language 'plpgsql';
+
+----------------------------- Delete an Auction -----------------------------
+-- select deleteAuction(id);
+
+CREATE OR REPLACE FUNCTION deleteAuction(
+    pID      INTEGER
+    ) 
+RETURNS INT AS'
+DECLARE
+    lID INTEGER;
+BEGIN
+    SELECT into lID id FROM Auction WHERE id = pID;
+
+    -- Auction does not exist
+    if(lID is null) then
+        return -401;
+    end if;
+
+    -- Delete the Auction
+    DELETE FROM Auction WHERE id = pID;
+    
+    return 200;
+END; 
+' language 'plpgsql';
+
+----------------------------- Read all Auctions of a User -----------------------------
+
+CREATE OR REPLACE FUNCTION getAuctionsForUser(pUID INTEGER)
+RETURNS TABLE(id integer,
+  min_price integer,
+  start_date date,
+  end_date date,
+  item_id integer) AS'
+DECLARE
+    lUID INTEGER;
+BEGIN
+    SELECT into lUID id FROM Users WHERE id = pUID;
+    RETURN QUERY
+    SELECT auction.id, auction.min_price, auction.start_date, auction.end_date, auction.item_id FROM Auction INNER JOIN Item ON (Item.users_id = lUID);
+END;
+' language 'plpgsql';
+
+------------------------------------------------------------------------------------------
+create or replace function createBid(
+    userID INT,
+    itemID INT,
+    bid_amount DECIMAL
+)
+returns INT as'
+
+declare
+  auctionID INT;
+    minAmount DECIMAL;
+begin
+  select into auctionID id from Auction where item_id = itemID;
+  if(auctionID is null) then
+    return -404;
+  end if;
+
+    select into minAmount min_amount from Auction where id = auctionID;
+
+    if(bid_amount < minAmount) then
+        return -400;
+    end if;
+
+  insert into Bid(amount, user_id, auction_id)
+              values(bid_amount, userID, auctionID);
+  return 1;
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function updateBid(
+    userID INT,
+  itemID INT,
+  new_bid_amount DECIMAL
+)
+returns INT as'
+
+declare
+  auctionID INT;
+    bidID INT;
+    oldBidAmount DECIMAL;
+begin
+  select into auctionID id from Auction where item_id = itemID;
+
+    if(auctionID is null) then
+        return -404;
+    end if;
+
+    select into bidID id from Bid where auction_id = auctionID AND user_id = userID;
+
+    if(bidID is null) then
+    return -404;
+  end if;
+
+    select into oldBidAmount amount from Bid where auction_id = auctionID AND user_id = userID;
+
+    if(oldBidAmount > new_bid_amount) then
+        return -400;
+    end if;
+
+    update Bid
+        set amount = new_bid_amount
+        where id = bidID;
+
+  return 1;
+end;
+'language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function retrieveWinningBid(
+  itemID INT
+)
+returns INT as'
+
+declare
+  auctionID INT;
+    maxAmount DECIMAL;
+begin
+  select into auctionID id from Auction where item_id = itemID;
+
+    if(auctionID is null) then
+    return -404;
+    end if;
+
+    select into maxAmount amount from Bid where auction_id = auctionID AND max(amount);
+
+    if(bidID is null) then
+    return -404;
+  end if;
+
+    return maxAmount;
+end;
+'language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function viewMyPurchasedItems(
+  userID INT
+)
+returns INT as'
+
+declare
+    bidID INT;
+    items integer[];
+begin
+    select into bidID bid_id from Transaction where user_id = userID;
+    if(bidID is null) then
+    return -404;
+    end if;
+
+    select into items item_id from Bid where id = bid_id;
+
+    return items;
+end;
+'language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function viewMyCurrentBids(
+  userID INT
+)
+returns TABLE as'
+
+declare
+    lTimeCurrent TIMESTAMP;
+    items TABLE;
+begin
+    SELECT into lTimeCurrent  ''now'';
+    SELECT * into items 
+    FROM Bid,Auction,Item
+    WHERE Auction.pEndDate < lTimeCurrent AND Bid.user = userID;
+
+    if(bidID is null) then
+        return -404;
+    end if;
+
+
+    return items;
+end;
+'language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function viewWinningBid(
+  auctionID INT
+)
+returns SETOF as'
+
+declare
+    item SETOF;
+begin
+    SELECT * into item 
+    FROM Bid,Auction,Item
+    WHERE Bid.amount = max(amount) AND Auction.id = auctionID;
+
+    if(bidID is null) then
+    return -404;
+    end if;
+
+
+    return item;
+end;
+'language 'plpgsql';
+
+----------------------------- Edit an Auction -----------------------------
+
+CREATE OR REPLACE FUNCTION editAuction(
+    auctionID INTEGER,
+    pItemID     INTEGER,
+    pStartPrice INTEGER,
+    pStartDate  DATE,
+    pEndDate    DATE
+    ) 
+RETURNS INT AS'
+DECLARE
+    lTimeCurrent TIMESTAMP;
+    lUID        INTEGER;
+    lItemID       INTEGER;
+    lStartDate DATE;
+BEGIN 
+    SELECT into lStartDate id FROM Auction WHERE id = auctionID;
+
+    SELECT into lTimeCurrent  ''now'';
+    -- Auction Start Date must be after the current time.
+    if(pStartDate < lTimeCurrent) then
+        return -400;
+    end if;
+
+    if(lStartDate > lTimeCurrent) then
+        return -400;
+    end if;
+
+    SELECT into lItemID id FROM Item WHERE id = pItemID AND users_id = lUID;
+
+    -- Item does not exist
+    if(lItemID is null) then
+        return -400;
+    end if;
+
+    UPDATE Auction
+        set item_id = lItemID,
+        start_date = pStartDate,
+        end_date = pEndDate,
+        min_price = pStartPrice
+        where id = auctionID;
+
+    return 200;
+END; 
+' language 'plpgsql';
+
+
+create or replace function updateUser(
+  pUserID INT,
+  pEmail VARCHAR(100),
+  pPassword VARCHAR (30),
+  pFirstName VARCHAR (30),
+  pLastName VARCHAR (30),
+  pGender VARCHAR(10),
+  pPicturePath VARCHAR(250),
+  pPhone VARCHAR (30),
+  )
+
+
+)
+returns INT as'
+
+begin
+  update Users
+    set name = pName
+        email = pEmail
+        password = pPassword
+        firstName = pFirstName
+        lastName = pLastName
+        gender = pGender
+        picturePath = pPicturePath
+        phone = pPhone
+
+
+    where ID = pUserID
+
+  return lID;
+end;
+' language 'plpgsql';
+-------------------------------------------------------------
+
+create or replace function deleteUser (
+pUserID INT
+)
+returns INT as'
+
+begin
+delete from Users where ID = pUserID
+
+return 0
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function addAddress(
+  pUserID INT,
+  pAddress VARCHAR(300)
+)
+returns INT as'
+
+declare
+  lID INT;
+
+begin
+  select into lID nextval(''seq_Addresses_ID'');
+  insert into Addresses (ID, address,userID) values (lID, pAddress,pUserID);
+
+  return lID;
+end;
+' language 'plpgsql';
+
+
+
+-------------------------------------------------------------
+
+create or replace getAddresses(
+  pUserID INT
+)
+
+returns TABLE(ID INT, address VARCHAR(300)) as'
+
+begin
+  return query
+    select ID, address from Addresses where userID = pUserID;
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace getAddress(
+  pUserID INT,
+  pAddressID INT
+)
+
+returns TABLE(ID INT, address VARCHAR(300)) as'
+
+begin
+  return query
+    select ID, address from Addresses where userID = pUserID and ID = pAddressID;
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace deleteAddress(
+  pUserID INT,
+  pAddressID INT
+)
+returns INT as'
+
+begin
+  delete from Addresses where userID = pUserID and ID = pAddressID
+
+  return 0
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+create or replace function updateAddress(
+  pUserID INT,
+  pAddressID INT,
+  pAddress VARCHAR(300)
+)
+returns INT as'
+
+begin
+  update Addresses
+    set address = pAddress
+    where userID = pUserID and ID = pAddressID
+
+  return lID;
+end;
+' language 'plpgsql';
+
+——————————————————————————————
+
+create or replace function getUser (
+
+pUserID INT
+)
+
+returns TABLE(ID INT , email VARCHAR(100), passwordHash VARCHAR(120), oldPassword VARCHAR(30), firstName VARCHAR(30), lastName VARCHAR(30),
+ gender VARCHAR (10), dob DATE, picturePath VARCHAR(250),lastLogin TIMESTAMP ,lastPasswordChange TIMESTAMP,lastAccess TIMESTAMP,
+disabled BOOLEAN,resetPassword BOOLEAN, question VARCHAR(200), answer VARCHAR(200), phone VARCHAR(30), verified BOOLEAN,
+ verificationCode VARCHAR(5), creationTime TIMESTAMP) as'
+
+begin
+
+return query
+  select * from Users where userID = pUserID;
+
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+
+create or replace function updateUser(
+  pUserID INT,
+  pEmail VARCHAR(100),
+  pPasswordHash VARCHAR (120),
+  pOldPassword VARCHAR (30),
+  pFirstName VARCHAR (30),
+  pLastName VARCHAR (30),
+  pGender VARCHAR(10),
+  pDob DATE,
+  pPicturePath VARCHAR(250),
+  pLastLogin TIMESTAMP,
+  pLastPasswordChange TIMESTAMP,
+  pLastAccess TIMESTAMP,
+  pDisabled BOOLEAN,
+  pResetPassword BOOLEAN,
+  pQuestion VARCHAR(200),
+  pAnswer VARCHAR (200),
+  pPhone VARCHAR (30),
+  pVerified BOOLEAN,
+  pVerificationCode VARCHAR(5),
+  pCreationTime TIMESTAMP
+  )
+
+
+)
+returns INT as'
+
+begin
+  update Users
+    set name = pName
+        email = pEmail
+        passwordHash = pPasswordHash
+        oldPassword = pOldPassword
+        firstName = pFirstName
+        lastName = pLastName
+        gender = pGender
+        dob = pDob
+        picturePath = pPicturePath
+        lastLogin = pLastLogin
+        lastPasswordChange = pLastPasswordChange
+        lastAccess = pLastAccess
+        disabled = pDisabled
+        resetPassword = pResetPassword
+        question = pQuestion
+        answer = pAnswer
+        phone = pPhone
+        verified = pVerified
+        verificationCode = pVerificationCode
+        creationTime = pCreationTime
+
+
+    where userID = pUserID
+
+  return lID;
+end;
+' language 'plpgsql';
+-------------------------------------------------------------
+
+create or replace function deleteUser (
+pUserID INT
+)
+returns INT as'
+
+begin
+delete from Users where userID = pUserID
+
+return 0
+end;
+' language 'plpgsql';
+
+-------------------------------------------------------------
+
+    
+
