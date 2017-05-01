@@ -21,8 +21,14 @@ class CreateItemCategoryCmd extends Command implements Runnable {
 //        System.out.println("--->> " + intCategoryID);
 
         if( intItemID <= 0  || 
-            intCategoryID <= 0 )
-           return null;
+            intCategoryID <= 0 ) {
+        	System.out.println("Error Parsing ItemId or CategoryId ");
+        	StringBuffer sb = new StringBuffer();
+        	sb.append("error");
+        	strbufResult = makeJSONResponseEnvelope(400, null, sb);
+        	return strbufResult;
+        }
+           
 
         sqlProc = connection.prepareCall("{?=call createItemCategory(?,?)}");
         sqlProc.registerOutParameter(1, Types.INTEGER );
@@ -31,7 +37,7 @@ class CreateItemCategoryCmd extends Command implements Runnable {
         sqlProc.execute( );
         StringBuffer sb = new StringBuffer();
         sb.append(sqlProc.getInt(1));
-        strbufResult = makeJSONResponseEnvelope( sqlProc.getInt( 1 ) , null, sb );
+        strbufResult = makeJSONResponseEnvelope( 200, null, sb );
         sqlProc.close( );
 
         return strbufResult;

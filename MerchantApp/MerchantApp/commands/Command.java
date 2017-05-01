@@ -43,8 +43,10 @@ public abstract class Command {
 				else
 					_clientHandle.terminateClientRequest();
 			} catch (Exception exp) {
-				System.err.println(exp.toString());
-				_clientHandle.terminateClientRequest();
+				exp.printStackTrace();
+				StringBuffer strbufError = new StringBuffer("Internal Server Error");
+				strbufError = makeJSONResponseEnvelope(500, null, strbufError);
+				_clientHandle.passResponsetoClient(strbufError);
 			} finally {
 				closeConnectionQuietly(connection);
 			}

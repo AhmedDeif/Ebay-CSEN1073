@@ -33,7 +33,8 @@ public class MqClientHandler extends SimpleChannelInboundHandler<Object>{
 	}
 	
 	public ChannelFuture send(Object data) {
-		String message = data.toString();		
+		String message = data.toString();
+		message += "\r\n";
 		return context.writeAndFlush(Unpooled.copiedBuffer(message, CharsetUtil.UTF_8));
 	}
 
