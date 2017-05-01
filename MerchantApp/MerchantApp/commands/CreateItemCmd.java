@@ -34,6 +34,8 @@ public class CreateItemCmd extends Command implements Runnable {
 			intSellerID = Integer.parseInt(jedis.get("user_id"));
 		else
 			intSellerID = -1;
+		
+		jedis.close();
 		// intSellerID = Integer.parseInt((String) mapUserData.get("sellerID"));
 		intCategoryID = Integer.parseInt((String) mapUserData.get("categoryID"));
 

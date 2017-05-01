@@ -1,8 +1,17 @@
 # Ebay Starter App
 
+- Create DB using DDL in folder database
+- Create Procedures using stored procedures in database
+- Run Postgresql
+- Run Mongod
+- Run RabbitMq Server
+
 ### Run code
+- Configure configuration.properties
 - Run Server.java
 - Run MqClient.java
+- Run node tester.js with the commands you want to test
+- Copy Json from terminal and publish to RabbitMq Queue
 
 ### Extend Starter with Commands
 - Create `Your Command` Class extends `command` with method `execute`

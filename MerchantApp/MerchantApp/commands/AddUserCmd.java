@@ -41,7 +41,7 @@ public class AddUserCmd extends Command implements Runnable {
 		StringBuffer sb = new StringBuffer();
 		sb.append(sqlProc.getInt(1));
 
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
+		strbufResult = makeJSONResponseEnvelope(200, null, sb);
 
 	
 

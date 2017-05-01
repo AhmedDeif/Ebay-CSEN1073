@@ -28,14 +28,15 @@ public class RequestParser implements Runnable {
 		try {
 			String request = _clientHandle.getRequest();
 
-			System.out.println("got request");
-			System.out.println(request);
+			
 			Map<String, Object> json = new Gson().fromJson(request, Map.class);
-			System.out.println(json.get("action"));
+			
 			String action = json.get("action").toString();
 			Map<String , Object> data = (Map<String, Object>) json.get("data");
-			System.out.println(data.toString());
-			ClientRequest _clientRequest = new ClientRequest(action, null, data);
+			Map<String , Object> properties = (Map<String, Object>) json.get("properties");
+
+			
+			ClientRequest _clientRequest = new ClientRequest(action, null, data, properties);
 			_parseListener.parsingFinished(_clientHandle, _clientRequest);
 
 			// System.out.println("STARTING PARSEING REQUEST........");
