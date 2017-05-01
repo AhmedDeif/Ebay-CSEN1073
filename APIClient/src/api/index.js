@@ -7,7 +7,12 @@ import when from 'when';
 import { StringDecoder } from 'string_decoder';
 const router = new Router();
 
- 
+require('./bidding.js');
+require('./merchant.js');
+require('./messenger.js');
+require('./search.js');
+require('./transaction.js');
+require('./user.js');
 /**
  * @apiDefine master Master access only
  * You must pass `access_token` parameter or a Bearer Token authorization header
@@ -68,12 +73,4 @@ function sendRequestToQueue(action, data, requestQueue, responseQueue, callback)
         }
     })
 }
-
-
-router.get("/", (req, res, next) => {
-    let data = { "action": "createUser", "data": { "firstName": "test user", "lastName": "aa", "email": "test@test.com", "password": "123" } };
-    sendRequestToQueue('CreateItemCategoryCmd', data, 'EbayMerchantsRequest', 'EbayMerchantsResponse', function(response) {
-
-    })
-})
 export default router
