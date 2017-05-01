@@ -11,6 +11,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import UserApp.commands.Command;
 import UserApp.config.ApplicationProperties;
 
+
 //import Dispatcher.Command;
 
 public class Dispatcher {
@@ -52,11 +53,13 @@ public class Dispatcher {
 		in.close();
 		Enumeration enumKeys = prop.propertyNames();
 		String strActionName, strClassName;
+		
+		System.out.println(enumKeys.toString() );
 
 		while (enumKeys.hasMoreElements()) {
 			strActionName = (String) enumKeys.nextElement();
 			strClassName = (String) prop.get(strActionName);
-			Class<?> innerClass = Class.forName("commands." + strClassName);
+			Class<?> innerClass = Class.forName("UserApp.commands." + strClassName);
 			_htblCommands.put(strActionName, innerClass);
 		}
 	}
@@ -66,7 +69,8 @@ public class Dispatcher {
 	}
 
 	public void init() throws Exception {
-		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
+		loadHikari("localhost", 5432, "ebay","postgres", "2428");
+//		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
 		loadThreadPool();
 		loadCommands();
 

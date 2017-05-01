@@ -402,7 +402,7 @@ function search(search_txt){
 
 function createUser(firstName, lastName, email,password){
    var gsRequest           =   new Object( );
-   gsRequest.action        =   "createUser";
+   gsRequest.action        =   "addUserSimple";
    var gsRequestData       =   new Object( );
    gsRequestData.firstName     =   firstName;
    gsRequestData.lastName  =   lastName;
@@ -414,6 +414,80 @@ function createUser(firstName, lastName, email,password){
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
+function addAddress(userID, address){
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "addAddressCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.userid     =   userID;
+   gsRequestData.address  =   address;
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+function updateAddress(userID, addressID, address) {
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "updateAddressCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.userid     =   userID;
+   gsRequestData.addressid  =   addressID;
+   gsRequestData.address  =   address;
+
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+function deleteAddress(userID, addressID){
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "deleteAddressCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.userid     =   userID;
+   gsRequestData.addressid  =   addressID;
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+
+function getAddress(userID, addressID) {
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "getAddressCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.userid     =   userID;
+   gsRequestData.addressid  =   addressID;
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+function updateUser(userID, firstName, lastName, email, password, gender, dob){
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "updateUserCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.id        =   userID;
+   gsRequestData.firstName        =   firstName;
+   gsRequestData.lastName        =   lastName;
+   gsRequestData.email        =   email;
+   gsRequestData.password        =   password;
+   gsRequestData.gender       =   gender;
+   gsRequestData.dateOfBirth        =   dob;
+
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
+function deleteUser(userID){
+   var gsRequest           =   new Object( );
+   gsRequest.action        =   "deleteUserCommand";
+   var gsRequestData       =   new Object( );
+   gsRequestData.id        =   userID;
+   gsRequest.data          =   gsRequestData;
+   var strJSON = JSON.stringify(gsRequest);  
+   console.log(strJSON);  
+   // sendRequest( strJSON, attemptLoginResponse );
+}
 
 //----------Rana's part ----------
 
@@ -433,7 +507,7 @@ function createUser(firstName, lastName, email,password){
   // createItem('iphone 7s', '100', 'item created','1', '5', '1');
   // createItem('iphone 7s plus', '90', 'item created','1', '5', '1');
   // createItem('macbook pro', '950', 'item created','1', '5', '1');
-  createItem('ipad pro', '70', 'item created','1', '5', '1');
+  // createItem('ipad pro', '70', 'item created','1', '5', '1');
 
 
 // editItem('24','iphone 6', '450', '1', 'item edited', '1');
@@ -466,8 +540,10 @@ function createUser(firstName, lastName, email,password){
 // findItemCategory('3','3');
 // viewCategory();
 // search('pro');
-// createUser("nana", "rana", "nana@rana.com", "password");
-
-      
-
-                  
+// createUser("abdelazeem", "rana", "nana@rana.com", "password");
+// addAddress('1',"home sweet home <3 ");
+// deleteAddress('1','1');
+// deleteUser('4');
+// getAddress('2','1');
+// updateAddress('2','1',"IBIZAAAA")
+updateUser('3',"Rana","El Bendary", "rana@gmail.com", "topsecret", "female", "");                  
