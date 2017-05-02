@@ -33,7 +33,8 @@ const router = new Router();
  */
 
 function sendRequestToQueue(action, data, requestQueue, responseQueue, callback) {
-    let connection = Amqp.connect("amqp://ebay:ebay@172.17.0.2:5672")
+    // let connection = Amqp.connect("amqp://ebay:ebay@172.17.0.2:5672")
+    let connection = Amqp.connect("amqp://ebay:ebay@192.168.43.121:5672")
     console.log({ connection });
     // let data = { "action": "createItem", "data": { "itemName": "AAAA pro", "price": "70", "desc": "item created", "categoryID": "1", "quantity": "5", "sellerID": "1" } };
     // let data = { "action": "createUser", "data": { "firstName": "test user", "lastName": "aa", "email": "test@test.com", "password": "123" } };
@@ -47,6 +48,7 @@ function sendRequestToQueue(action, data, requestQueue, responseQueue, callback)
             let correlationId = uuid();
             when.all([
                 channel.assertQueue(requestQueue),
+                channel.assertQueue(responseQueue),
                 channel.sendToQueue(requestQueue, new Buffer(JSON.stringify(dataToSend)), { correlationId }),
                 channel.consume(responseQueue, (message) => {
                     let { content, fields, properties } = message;
@@ -65,14 +67,19 @@ function sendRequestToQueue(action, data, requestQueue, responseQueue, callback)
 
                 })
             ]);
+    }).catch( (err) => {
+      console.log(err);
     })
 }
 
 
-router.get("/", (req, res, next) => {
-    let data = { "firstName": "test user", "lastName": "aa", "email": "test@test.com", "password": "123" } ;
+router.post("/user/create", (req, res, next) => {
+
+    // let data = { "firstName": req.firstName, "lastName": req.firstName, "email": "test@test.com", "password": "123" } ;
+    let data = req.data
     sendRequestToQueue('createUser', data, 'EbayMerchantsRequest', 'EbayMerchantsResponse', function(response) {
       res.send(response);
     })
 })
+
 export default router
