@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class DeleteUserCommand extends Command implements Runnable {
@@ -14,6 +16,13 @@ public class DeleteUserCommand extends Command implements Runnable {
 		StringBuffer strbufResult;
 		CallableStatement sqlProc;
 		 int id = Integer.parseInt((String) mapUserData.get("id"));
+		 if (id <= 0) {
+			 StringBuffer errorBuffer = new StringBuffer();
+				JsonObject error = new JsonObject();
+				error.addProperty("errorMsg", "error");
+				errorBuffer.append(error.toString());
+				return errorBuffer;
+		 }
 //		Jedis jedis = new Jedis("localhost");
 //		int id = Integer.parseInt(jedis.get("user_id"));
 
@@ -27,7 +36,20 @@ public class DeleteUserCommand extends Command implements Runnable {
 		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 		sqlProc.close();
 
-		return strbufResult;
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+//			sqlProc.close();
+
+			return strbufResult;
+		} else {
+//			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 	}
 
 }

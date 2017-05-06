@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class DeleteAddressCommand extends Command implements Runnable {
@@ -17,6 +19,14 @@ public class DeleteAddressCommand extends Command implements Runnable {
 //	  UserID = Integer.parseInt(jedis.get("user_id"));
 		
       int addressID = Integer.parseInt((String) mapUserData.get("addressid"));
+      
+      if (addressID <= 0) {
+    	  StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+      }
     
 	  sqlProc = connection.prepareCall("{call deleteaddress(?,?)}");
 	  sqlProc.registerOutParameter(1, Types.INTEGER);
@@ -29,7 +39,20 @@ public class DeleteAddressCommand extends Command implements Runnable {
 	  strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 	  sqlProc.close();
 	 	  
-	  return strbufResult;
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+//			sqlProc.close();
+
+			return strbufResult;
+		} else {
+//			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
   }
 
 }

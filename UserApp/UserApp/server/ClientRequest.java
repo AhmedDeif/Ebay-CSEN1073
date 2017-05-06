@@ -7,11 +7,13 @@ public class ClientRequest {
 
 	protected String _strAction, _strSessionID;
 	protected Map<String, Object> _mapRequestData;
+	protected Map<String, Object> _mapRequestProperties;
 
-	public ClientRequest(String strAction, String strSessionID, Map<String, Object> mapRequestData) {
+	public ClientRequest(String strAction, String strSessionID, Map<String, Object> mapRequestData, Map<String, Object>  mapRequestProperties) {
 		_strAction = strAction;
 		_strSessionID = strSessionID;
 		_mapRequestData = mapRequestData;
+		_mapRequestProperties = mapRequestProperties;
 	}
 
 	public String getAction() {
@@ -24,6 +26,10 @@ public class ClientRequest {
 
 	public Map<String, Object> getData() {
 		return _mapRequestData;
+	}
+	
+	public Map<String, Object> getProperties() {
+		return _mapRequestProperties;
 	}
 
 }

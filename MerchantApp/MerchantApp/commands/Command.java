@@ -44,7 +44,9 @@ public abstract class Command {
 					_clientHandle.terminateClientRequest();
 			} catch (Exception exp) {
 				exp.printStackTrace();
-				StringBuffer strbufError = new StringBuffer("Internal Server Error");
+				StringBuffer strbufError = new StringBuffer();
+				String str = "Internal Server Error";
+				strbufError.append(str);
 				strbufError = makeJSONResponseEnvelope(500, null, strbufError);
 				_clientHandle.passResponsetoClient(strbufError);
 			} finally {

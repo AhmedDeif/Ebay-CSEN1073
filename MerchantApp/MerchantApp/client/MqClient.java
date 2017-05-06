@@ -24,7 +24,6 @@ public class MqClient {
 
 		try {
 			
-			
 			ApplicationProperties.readConfiguration("config.properties");
 			HOST = ApplicationProperties.appHost;
 			PORT = ApplicationProperties.appPort;

@@ -10,6 +10,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rabbitmq.client.AMQP.BasicProperties;
+
+import UserApp.client.MqClientHandler;
+import UserApp.client.MqConsumer;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -33,13 +37,16 @@ public class MqConsumer extends DefaultConsumer {
 	public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body) {
 
 		try {
+			
 			JsonObject messageJson = createMessageJson(properties, body);
+			log.info("CONSUMED MESSAGE FROM MQ: " + messageJson);
 			_clientHandler.send(messageJson).addListener(new ChannelFutureListener() {
 				@Override
 				public void operationComplete(ChannelFuture arg0) throws Exception {
 					_channel.basicAck(envelope.getDeliveryTag(), false);
 					log.info("MQ Reciever Acknowledge Message");
 				}
+				
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -52,9 +59,7 @@ public class MqConsumer extends DefaultConsumer {
 		String messageBody = new String(body);
 		JsonObject messageJson = gson.fromJson(messageBody, JsonObject.class);
 		JsonElement propertiesJson = gson.toJsonTree(properties, BasicProperties.class);
-		JsonElement headersJson = gson.toJsonTree(properties.getHeaders(), Map.class);
 		messageJson.add("properties", propertiesJson);
-		messageJson.add("headers", headersJson);
 		return messageJson;
 	}
 

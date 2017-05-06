@@ -3,7 +3,14 @@ package UserApp.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.rabbitmq.client.AMQP.BasicProperties;
+
 import io.netty.buffer.Unpooled;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -27,13 +34,12 @@ public class MqClientHandler extends SimpleChannelInboundHandler<Object>{
 	
 	public ChannelFuture send(Object data) {
 		String message = data.toString();
-		
+		message += "\r\n";
 		return context.writeAndFlush(Unpooled.copiedBuffer(message, CharsetUtil.UTF_8));
 	}
 
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
-		log.info("CONNECTION ESTABLISHED " + ctx.name());
 		context = ctx;
 		startMqListener(ctx);
 	}
@@ -44,14 +50,24 @@ public class MqClientHandler extends SimpleChannelInboundHandler<Object>{
 		cause.printStackTrace();
 		ctx.close();
 	}
+	
 
 	@Override
-	protected void messageReceived(ChannelHandlerContext ctx, Object data) throws Exception {
-		// TODO Auto-generated method stub
-		log.info("MESSAGE RECIEVED AT CLIENT: " + data);
+	protected void messageReceived(ChannelHandlerContext ctx, Object data) throws Exception {	
+		
+		String messageString = (String) data;
+		
+		System.out.println("[PARSE RESPONSE MQCLIENT HANDLE MESSAGE RECIEVED]: " + messageString);
+		JsonParser parser = new JsonParser();
+		JsonObject obj = parser.parse(messageString).getAsJsonObject();
+		JsonElement propertiesJson = obj.get("properties");
+		obj.remove("properties");
+		
+		Gson gson = new Gson();
+		
+		BasicProperties properties = gson.fromJson(propertiesJson, BasicProperties.class);
 		
 		
-		
-		_mqSender.send(data.toString());
+		_mqSender.send(gson.toJson(obj), properties);
 	}
 }

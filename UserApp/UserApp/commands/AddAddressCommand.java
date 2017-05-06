@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
 
@@ -22,6 +23,13 @@ public class AddAddressCommand extends Command implements Runnable {
 //		UserID = Integer.parseInt(jedis.get("user_id"));
 
 		int UserID = Integer.parseInt((String) mapUserData.get("userid"));
+		if(UserID <= 0){
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 
 		String address = (String) mapUserData.get("address");
 
@@ -38,7 +46,20 @@ public class AddAddressCommand extends Command implements Runnable {
 		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
 		sqlProc.close();
 
-		return strbufResult;
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+//			sqlProc.close();
+
+			return strbufResult;
+		} else {
+//			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 
 	}
 }

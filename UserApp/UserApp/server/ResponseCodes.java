@@ -14,7 +14,7 @@ public class ResponseCodes {
         String[][] pairs = {
         
             {"0","cheer up. you are good :)"},
-            {"-1","false"},
+            {"-1","false"},{"200","Request successful"},{"404","Not Found"},{"500","Internal Server Error"}
             
 
         };

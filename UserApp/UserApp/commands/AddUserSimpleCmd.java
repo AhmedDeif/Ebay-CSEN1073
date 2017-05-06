@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class AddUserSimpleCmd extends Command implements Runnable {
@@ -56,6 +58,18 @@ public class AddUserSimpleCmd extends Command implements Runnable {
 			lastName = (String) mapUserData.get("lastName");
 			email = (String) mapUserData.get("email");
 			password = (String) mapUserData.get("password");
+			
+			if (firstName == null || firstName.trim().length() == 0 ||
+					lastName == null || lastName.trim().length() == 0 ||
+					email == null || email.trim().length() == 0 ||
+					password == null || password.trim().length() == 0) {
+				StringBuffer errorBuffer = new StringBuffer();
+				JsonObject error = new JsonObject();
+				error.addProperty("errorMsg", "error");
+				errorBuffer.append(error.toString());
+				return errorBuffer;
+			}
+			
 			// gender = (String) mapUserData.get("gender");
 
 			// if (firstName == null || strItemName.trim().length() == 0 || dblPrice
@@ -83,6 +97,19 @@ public class AddUserSimpleCmd extends Command implements Runnable {
 //			Jedis jedis = new Jedis("localhost");
 //			jedis.set("user_id", "" + sqlProc.getInt(1));
 			sqlProc.close();
-			return strbufResult;
+			if (!sb.toString().equals(null)) {
+				strbufResult = makeJSONResponseEnvelope(200, null, sb);
+//				sqlProc.close();
+
+				return strbufResult;
+			} else {
+//				sqlProc.close();
+				System.out.println("DB returned null!");
+				StringBuffer errorBuffer = new StringBuffer();
+				JsonObject error = new JsonObject();
+				error.addProperty("errorMsg", "error");
+				errorBuffer.append(error.toString());
+				return errorBuffer;
+			}
 		}
 	}

@@ -7,6 +7,8 @@ import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class GetAddressCommand extends Command implements Runnable {
@@ -20,6 +22,13 @@ public class GetAddressCommand extends Command implements Runnable {
 		
 		
 		int AddressID = Integer.parseInt((String) mapUserData.get("addressid"));
+		if (AddressID <= 0) {
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 		
         connection.setAutoCommit(false);
 		sqlProc = connection.prepareCall("{call getaddress(?,?)}");
@@ -68,7 +77,20 @@ public class GetAddressCommand extends Command implements Runnable {
 			sqlProc.close();
 
 //		}
-		return strbufResult;
+			if (!sb.toString().equals(null)) {
+				strbufResult = makeJSONResponseEnvelope(200, null, sb);
+//				sqlProc.close();
+
+				return strbufResult;
+			} else {
+//				sqlProc.close();
+				System.out.println("DB returned null!");
+				StringBuffer errorBuffer = new StringBuffer();
+				JsonObject error = new JsonObject();
+				error.addProperty("errorMsg", "error");
+				errorBuffer.append(error.toString());
+				return errorBuffer;
+			}
 
 
 		/////

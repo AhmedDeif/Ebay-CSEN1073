@@ -7,6 +7,10 @@ import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.DefaultConsumer;
 
+import UserApp.client.MqClientHandler;
+import UserApp.client.MqConsumer;
+import UserApp.client.MqRecieverThread;
+
 public class MqRecieverThread extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(MqRecieverThread.class);
 

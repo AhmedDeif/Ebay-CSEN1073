@@ -5,29 +5,31 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
-//// Cart Cmd
 
-class CreateCartCmd extends Command implements Runnable {
+public class CreateCartCmd extends Command implements Runnable {
 
     public StringBuffer execute(Connection connection,  Map<String, Object> mapUserData ) throws Exception {
 
         StringBuffer        strbufResult;
         CallableStatement   sqlProc;
         int                 intUserID;
-                            
-//        intUserID    =   Integer.parseInt((String) mapUserData.get( "userID") );
-    	Jedis jedis = new Jedis("localhost");
-		if (jedis.get("user_id") != null)
-			intUserID = Integer.parseInt(jedis.get("user_id"));
-		else
-			intUserID = -1;
+                       
+        System.out.println("Create Cart Cmd");
         
-        
-//    	intUserID = Integer.parseInt(jedis.get("user_id"));
-        if(intUserID <= 0)
-           return null;
+        intUserID    =   Integer.parseInt((String) mapUserData.get( "userID") );
+
+        if(intUserID <= 0){
+        	StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+        }
+           
 
         sqlProc = connection.prepareCall("{call createCart(?)}");
         sqlProc.registerOutParameter(1, Types.INTEGER );
@@ -35,7 +37,9 @@ class CreateCartCmd extends Command implements Runnable {
         sqlProc.execute( );
         StringBuffer sb = new StringBuffer();
         sb.append(sqlProc.getInt(1));
-        strbufResult = makeJSONResponseEnvelope( sqlProc.getInt( 1 ) , null, sb );
+        System.out.println("RESULT:");
+        System.out.println(sb.toString() );
+        strbufResult = makeJSONResponseEnvelope( 200 , null, sb );
         sqlProc.close( );
 
         return strbufResult;

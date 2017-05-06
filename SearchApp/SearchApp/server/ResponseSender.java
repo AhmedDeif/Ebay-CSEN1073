@@ -1,7 +1,10 @@
 package SearchApp.server;
 
+
 import java.util.Set;
 
+import SearchApp.server.ClientHandle;
+import SearchApp.server.ClientRequest;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.Cookie;
@@ -16,8 +19,6 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.ServerCookieDecoder;
 import io.netty.handler.codec.http.ServerCookieEncoder;
 import io.netty.util.CharsetUtil;
-import SearchApp.server.ClientHandle;
-import SearchApp.server.ClientRequest;
 
 public class ResponseSender implements Runnable {
 

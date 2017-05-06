@@ -7,6 +7,8 @@ import java.sql.Types;
 import java.util.Calendar;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class UpdateUserCommand extends Command implements Runnable {
@@ -24,6 +26,19 @@ public class UpdateUserCommand extends Command implements Runnable {
 	  String lastName = (String) mapUserData.get("lastName");
 	  String gender = (String) mapUserData.get("gender");
 	  String dob = (String) mapUserData.get("dateOfBirth");
+	  
+	  if (email == null || email.trim().length() == 0 ||
+			  password == null || password.trim().length() == 0 ||
+			  firstName == null || firstName.trim().length() == 0 ||
+			  lastName == null || lastName.trim().length() == 0 ||
+			  gender == null || gender.trim().length() == 0 ||
+			  dob == null || dob.trim().length() == 0) {
+		  StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+	  }
 	  
 	  sqlProc = connection.prepareCall("{call updateUser(?,?,?,?,?,?,?)}");
 	  sqlProc.registerOutParameter(1, Types.INTEGER);
