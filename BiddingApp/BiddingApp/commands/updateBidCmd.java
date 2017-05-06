@@ -5,6 +5,8 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 import redis.clients.jedis.Jedis;
 
 public class updateBidCmd extends Command implements Runnable {
@@ -34,10 +36,27 @@ public class updateBidCmd extends Command implements Runnable {
 		sqlProc.setDouble(4, strNewBidAmount);
 
 		sqlProc.execute();
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
-		sqlProc.close();
+		StringBuffer sb = new StringBuffer();
+//		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
+//		sqlProc.close();
 		
-		return strbufResult;
+		sb.append(sqlProc.getInt(1));
+		
+		System.out.println("-----------");
+		System.out.println(sb.toString());
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+			sqlProc.close();
+			return strbufResult;
+		} else {
+			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 	}
 
 	

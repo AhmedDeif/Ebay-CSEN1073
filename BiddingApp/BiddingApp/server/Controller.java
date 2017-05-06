@@ -3,7 +3,14 @@ package BiddingApp.server;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Controller implements ParseListener {
+import BiddingApp.server.Cache;
+import BiddingApp.server.ClientHandle;
+import BiddingApp.server.ClientRequest;
+import BiddingApp.server.Dispatcher;
+import BiddingApp.server.ParseListener;
+import BiddingApp.server.RequestParser;
+
+class Controller implements ParseListener {
 
 	protected Dispatcher _dispatcher;
 	protected ExecutorService _threadPoolParsers;
@@ -26,8 +33,8 @@ public class Controller implements ParseListener {
 			String strAction;
 			strAction = clientRequest.getAction();
 			if (strAction.equalsIgnoreCase("createBid")  || strAction.equalsIgnoreCase("deleteAuction")
-				|| strAction.equalsIgnoreCase("createAuction") || strAction.equalsIgnoreCase("editAuction")
-				|| strAction.equalsIgnoreCase("readAllAuction") || strAction.equalsIgnoreCase("readAuction")) {
+					|| strAction.equalsIgnoreCase("createAuction") || strAction.equalsIgnoreCase("editAuction")
+					|| strAction.equalsIgnoreCase("readAllAuction") || strAction.equalsIgnoreCase("readAuction")) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;

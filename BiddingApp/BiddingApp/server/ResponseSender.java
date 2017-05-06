@@ -2,6 +2,8 @@ package BiddingApp.server;
 
 import java.util.Set;
 
+import BiddingApp.server.ClientHandle;
+import BiddingApp.server.ClientRequest;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.Cookie;

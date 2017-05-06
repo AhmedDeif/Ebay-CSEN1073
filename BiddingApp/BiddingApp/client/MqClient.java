@@ -3,6 +3,8 @@ package BiddingApp.client;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import BiddingApp.client.MqClient;
+import BiddingApp.client.MqClientInitializer;
 import BiddingApp.config.ApplicationProperties;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
@@ -16,16 +18,18 @@ public class MqClient {
 	static String HOST;
 	static int PORT;
 
-	public static void main(String[] args) {
+
+	public void init() {
 		EventLoopGroup group = new NioEventLoopGroup();
 
 		try {
+
 			ApplicationProperties.readConfiguration("config.properties");
 			HOST = ApplicationProperties.appHost;
 			PORT = ApplicationProperties.appPort;
-			
-			System.out.println(PORT);
-			
+
+			log.info("MQClient connected to http" + "://127.0.0.1:" + PORT + '/');
+
 			Bootstrap b = new Bootstrap();
 			b.group(group).channel(NioSocketChannel.class).handler(new MqClientInitializer());
 
@@ -40,5 +44,9 @@ public class MqClient {
 			// The connection is closed automatically on shutdown.
 			group.shutdownGracefully();
 		}
+	}
+	public static void main(String[] args) {
+		MqClient client = new MqClient();
+		client.init();
 	}
 }

@@ -11,6 +11,9 @@ import org.slf4j.LoggerFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import BiddingApp.client.MqClientHandler;
+import BiddingApp.client.MqReceiver;
+import BiddingApp.client.MqRecieverThread;
 import BiddingApp.config.ApplicationProperties;
 
 /**
@@ -41,6 +44,7 @@ public class MqReceiver {
 		connnectionFactory.setUsername(ApplicationProperties.mqRequestUser);
 		connnectionFactory.setPassword(ApplicationProperties.mqRequestPassword);
 		connnectionFactory.setPort(ApplicationProperties.mqResponsePort);
+		connnectionFactory.setRequestedHeartbeat(10);
 		connnectionFactory.setVirtualHost("/");
 		
 		this.clientHandler = clientHandler;
@@ -55,6 +59,7 @@ public class MqReceiver {
 	public void start() {
 		try {
 			Connection connection = connnectionFactory.newConnection();
+
 			MqRecieverThread thread = new MqRecieverThread(connection, exchangeName, queueName, routeKey, queueTag, clientHandler);
 			executors.execute(thread);
 

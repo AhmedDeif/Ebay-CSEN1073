@@ -2,6 +2,7 @@ package BiddingApp.server;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import BiddingApp.server.ServerHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 
@@ -51,5 +52,5 @@ public class ClientHandle {
 		strIPAddress = inetaddress.getHostAddress();
 		return strIPAddress;
 	}
-	
+
 }

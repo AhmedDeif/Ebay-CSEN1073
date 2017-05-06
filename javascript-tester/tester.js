@@ -15,7 +15,7 @@ function stripNewLineCharacter( strText ){
 
 
 function sendRequest_vista( strJSON, callbackfunc ){
-   
+
     request.cookie("");
     request.post('http://localhost:3000/',
                 { form: { SrvReq: strJSON } },
@@ -45,7 +45,7 @@ function deleteItemCategory(itemID, categoryID){
     gsRequestData.itemID    =   itemID;
     gsRequestData.categoryID=   categoryID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest);    
+    var strJSON = JSON.stringify(gsRequest);
     console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
@@ -56,7 +56,7 @@ function createCart(userID){
     var gsRequestData       =   new Object( );
     gsRequestData.userID    =   userID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest);  
+    var strJSON = JSON.stringify(gsRequest);
     console.log(strJSON)  ;
     // sendRequest( strJSON, attemptLoginResponse );
 }
@@ -67,7 +67,7 @@ function deleteCart(ID){
     var gsRequestData       =   new Object( );
     gsRequestData.ID        =   ID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest);    
+    var strJSON = JSON.stringify(gsRequest);
     console.log(strJSON)  ;
 }
 
@@ -77,8 +77,8 @@ function findCart(ID){
     var gsRequestData       =   new Object( );
     gsRequestData.ID        =   ID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest); 
-    console.log(strJSON);   
+    var strJSON = JSON.stringify(gsRequest);
+    console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -90,8 +90,8 @@ function addItemToCart(cartID, itemID, quantity){
     gsRequestData.itemID    =   itemID;
     gsRequestData.quantity  =   quantity;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest);  
-    console.log(strJSON);  
+    var strJSON = JSON.stringify(gsRequest);
+    console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -103,8 +103,8 @@ function updateItemInCart(cartID, itemID, quantity){
     gsRequestData.itemID    =   itemID;
     gsRequestData.quantity  =   quantity;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest);  
-    console.log(strJSON);  
+    var strJSON = JSON.stringify(gsRequest);
+    console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -115,8 +115,8 @@ function deleteItemInCart(cartID, itemID){
     gsRequestData.cartID    =   cartID;
     gsRequestData.itemID    =   itemID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest); 
-    console.log(strJSON);   
+    var strJSON = JSON.stringify(gsRequest);
+    console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -126,11 +126,11 @@ function viewItemsInCart(cartID){
     var gsRequestData       =   new Object( );
     gsRequestData.cartID    =   cartID;
     gsRequest.data          =   gsRequestData;
-    var strJSON = JSON.stringify(gsRequest); 
-    console.log(strJSON);   
+    var strJSON = JSON.stringify(gsRequest);
+    console.log(strJSON);
     // sendRequest( strJSON, attemptLoginResponse );
 }
-  
+
 
 function addUserResponse( err,httpResponse,body ){
     console.log( body );
@@ -152,8 +152,8 @@ function createItem(itemName, price, desc,categoryID, quantity, sellerID){
    gsRequestData.quantity  =   quantity;
    gsRequestData.sellerID  =   sellerID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -168,9 +168,9 @@ function editItem(itemID, itemName, price, quantity,desc, sellerID){
    gsRequestData.quantity  =   quantity;
    gsRequestData.sellerID  =   sellerID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);   
+   var strJSON = JSON.stringify(gsRequest);
     console.log(strJSON);
- 
+
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function deleteItem(itemID){
@@ -179,7 +179,7 @@ function deleteItem(itemID){
    var gsRequestData       =   new Object( );
    gsRequestData.itemID    =   itemID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);    
+   var strJSON = JSON.stringify(gsRequest);
    // sendRequest( strJSON, attemptLoginResponse );
     console.log(strJSON);
 
@@ -191,7 +191,7 @@ function findItem(itemID){
    gsRequestData.itemID    =   itemID;
    gsRequest.data          =   gsRequestData;
    var strJSON = JSON.stringify(gsRequest);
-   console.log(strJSON);    
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function viewItem(){
@@ -200,7 +200,7 @@ function viewItem(){
    var gsRequestData       =   new Object( );
    gsRequest.data          =   gsRequestData;
    var strJSON = JSON.stringify(gsRequest);
-   console.log(strJSON);    
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 // Command
@@ -212,7 +212,7 @@ function createComment(comment_text, itemID, userID){
    gsRequestData.itemID     =   itemID;
    gsRequestData.userID      =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);    
+   var strJSON = JSON.stringify(gsRequest);
    console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
@@ -225,8 +225,8 @@ function editComment(comment_text, itemID, userID,commentID){
    gsRequestData.userID      =   userID;
    gsRequestData.commentID = commentID
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);   
-   console.log(strJSON); 
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function viewComment(){
@@ -234,7 +234,7 @@ function viewComment(){
    gsRequest.action        =   "viewComment";
    var gsRequestData       =   new Object( );
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);    
+   var strJSON = JSON.stringify(gsRequest);
    console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
@@ -244,8 +244,8 @@ function findComment(commentID){
    var gsRequestData       =   new Object( );
    gsRequestData.commentID = commentID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);   
-   console.log(strJSON); 
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 //Rating
@@ -257,7 +257,7 @@ function createUserRating(rating, itemID, userID){
    gsRequestData.itemID     =   itemID;
    gsRequestData.userID      =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);    
+   var strJSON = JSON.stringify(gsRequest);
    sendRequest( strJSON, attemptLoginResponse );
 }
 function editUserRating(rating, itemID, userID){
@@ -268,8 +268,8 @@ function editUserRating(rating, itemID, userID){
    gsRequestData.itemID     =   itemID;
    gsRequestData.userID      =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest); 
-   console.log(strJSON);   
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function deleteUserRating(itemID, userID){
@@ -279,7 +279,7 @@ function deleteUserRating(itemID, userID){
    gsRequestData.itemID     =   itemID;
    gsRequestData.userID      =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);    
+   var strJSON = JSON.stringify(gsRequest);
    sendRequest( strJSON, attemptLoginResponse );
 }
 function viewItemUserRating(itemID){
@@ -288,8 +288,8 @@ function viewItemUserRating(itemID){
    var gsRequestData       =   new Object( );
    gsRequestData.itemID     =   itemID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function findItemRating(itemID,userID){
@@ -299,8 +299,8 @@ function findItemRating(itemID,userID){
    gsRequestData.itemID     =   itemID;
    gsRequestData.userID     =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function calculateRating(itemID){
@@ -309,8 +309,8 @@ function calculateRating(itemID){
    var gsRequestData       =   new Object( );
    gsRequestData.itemID     =   itemID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON) ; 
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON) ;
    // sendRequest( strJSON, attemptLoginResponse );
 }
 // end nesreen's func//
@@ -423,8 +423,8 @@ function createUser(firstName, lastName, email,password){
    gsRequestData.email     =   email;
    gsRequestData.password     =   password;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -435,8 +435,8 @@ function addAddress(userID, address){
    gsRequestData.userid     =   userID;
    gsRequestData.address  =   address;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function updateAddress(userID, addressID, address) {
@@ -448,8 +448,8 @@ function updateAddress(userID, addressID, address) {
    gsRequestData.address  =   address;
 
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function deleteAddress(userID, addressID){
@@ -459,8 +459,8 @@ function deleteAddress(userID, addressID){
    gsRequestData.userid     =   userID;
    gsRequestData.addressid  =   addressID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -471,8 +471,8 @@ function getAddress(userID, addressID) {
    gsRequestData.userid     =   userID;
    gsRequestData.addressid  =   addressID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -482,8 +482,8 @@ function getUser(userID) {
    var gsRequestData       =   new Object( );
    gsRequestData.userid     =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
@@ -500,8 +500,8 @@ function updateUser(userID, firstName, lastName, email, password, gender, dob){
    gsRequestData.dateOfBirth        =   dob;
 
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 function deleteUser(userID){
@@ -510,11 +510,93 @@ function deleteUser(userID){
    var gsRequestData       =   new Object( );
    gsRequestData.id        =   userID;
    gsRequest.data          =   gsRequestData;
-   var strJSON = JSON.stringify(gsRequest);  
-   console.log(strJSON);  
+   var strJSON = JSON.stringify(gsRequest);
+   console.log(strJSON);
    // sendRequest( strJSON, attemptLoginResponse );
 }
 
+function addBid(user_id, item_id, bid_amount){
+    var gsRequest           = new Object( );
+    gsRequest.action        = "createBid";
+    var gsRequestData       = new Object( );
+    gsRequestData.user_id     = user_id;
+    gsRequestData.item_id     = item_id;
+    gsRequestData.bid_amount  = bid_amount;
+    gsRequest.data          = 	gsRequestData;
+    var strJSON = JSON.stringify(gsRequest);
+	console.log(strJSON);
+
+    // sendRequest( strJSON, addUserResponse );
+}
+
+function deleteAuction(pID) {
+	var gsRequest           = new Object( );
+    gsRequest.action        = "deleteAuction";
+    var gsRequestData       = new Object( );
+    gsRequestData.pID     = pID;
+    gsRequest.data          = 	gsRequestData;
+    var strJSON = JSON.stringify(gsRequest);
+	console.log(strJSON);
+}
+function addUserResponse( err,httpResponse,body ){
+    console.log( body );
+}
+
+function addAuction(pUID, pItemID, pStartPrice, pStartDate, pEndDate){
+    var gsRequest           = new Object( );
+    gsRequest.action        = "createAuction";
+    var gsRequestData       = new Object( );
+    gsRequestData.pUID     = pUID;
+    gsRequestData.pItemID     = pItemID;
+    gsRequestData.pStartPrice  = pStartPrice;
+    gsRequestData.pStartDate  = pStartDate;
+    gsRequestData.pEndDate  = pEndDate;
+
+    gsRequest.data          = 	gsRequestData;
+    var strJSON = JSON.stringify(gsRequest);
+	console.log(strJSON);
+
+    // sendRequest( strJSON, addUserResponse );
+}
+
+// function attemptLogin( email, password ){
+// 	var gsRequest           = 	new Object( );
+//     gsRequest.action        = 	"attemptLogin";
+//     var gsRequestData       = 	new Object( );
+//     gsRequestData.email	    = 	email;
+//     gsRequestData.password	= 	password;
+//     gsRequest.data          = 	gsRequestData;
+//     var strJSON = JSON.stringify(gsRequest);
+//     sendRequest( strJSON, attemptLoginResponse );
+// }
+
+// function attemptLoginResponse( err,httpResponse,body ){
+//     console.log( body );
+// }
+
+
+// To start sending messages:
+// addBid('1', '1', '10');
+//attemptLogin("mohamed@m.com","johnpass");
+// deleteAuction('1')
+
+function editAuction(auctionID, pItemID, pStartPrice, pStartDate, pEndDate){
+    var gsRequest           = new Object( );
+    gsRequest.action        = "editAuction";
+    var gsRequestData       = new Object( );
+    gsRequestData.auctionID     = auctionID;
+    gsRequestData.pItemID     = pItemID;
+    gsRequestData.pStartPrice  = pStartPrice;
+    gsRequestData.pStartDate  = pStartDate;
+    gsRequestData.pEndDate  = pEndDate;
+
+    gsRequest.data          = 	gsRequestData;
+    var strJSON = JSON.stringify(gsRequest);
+	console.log(strJSON);
+
+    // sendRequest( strJSON, addUserResponse );
+}
+addAuction('2', '1', '100', '17-12-2017', '20-12-2017')
 //----------Rana's part ----------
 
 // To start sending messages:
@@ -572,5 +654,5 @@ function deleteUser(userID){
 // deleteUser('4');
 // getAddress('2','1');
 // updateAddress('2','1',"IBIZAAAA")
-// updateUser('3',"Rana","El Bendary", "rana@gmail.com", "topsecret", "female", "");                  
-getUser('77');
+// updateUser('3',"Rana","El Bendary", "rana@gmail.com", "topsecret", "female", "");
+// getUser('77');

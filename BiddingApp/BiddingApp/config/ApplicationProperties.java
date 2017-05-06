@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import BiddingApp.config.ApplicationProperties;
+
 public class ApplicationProperties {
 	public static String appHost;
 	public static int appPort;

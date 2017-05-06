@@ -10,6 +10,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.rabbitmq.client.AMQP.BasicProperties;
+
+import BiddingApp.client.MqClientHandler;
+import BiddingApp.client.MqConsumer;
+
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
@@ -30,16 +34,19 @@ public class MqConsumer extends DefaultConsumer {
 	}
 
 	@Override
-	public void handleDelivery(String consumerTag, final Envelope envelope, BasicProperties properties, byte[] body) {
+	public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body) {
 
 		try {
+			
 			JsonObject messageJson = createMessageJson(properties, body);
+			log.info("CONSUMED MESSAGE FROM MQ: " + messageJson);
 			_clientHandler.send(messageJson).addListener(new ChannelFutureListener() {
 				@Override
 				public void operationComplete(ChannelFuture arg0) throws Exception {
 					_channel.basicAck(envelope.getDeliveryTag(), false);
 					log.info("MQ Reciever Acknowledge Message");
 				}
+				
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
