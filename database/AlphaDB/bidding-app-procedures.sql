@@ -70,3 +70,78 @@ BEGIN
     OPEN auctions FOR  SELECT * FROM Auction INNER JOIN Item ON (Item.users_id = pUID);
         RETURN auctions;
 END;
+-------------------------------- DELETE AUCTION -------------------------------------------
+DECLARE
+    lID INTEGER;
+BEGIN
+    SELECT into lID id FROM Auction WHERE id = pID;
+
+    -- Auction does not exist
+    if(lID is null) then
+        return -401;
+    end if;
+
+    -- Delete the Auction
+    DELETE FROM Auction WHERE id = pID;
+
+    return 200;
+END;
+
+------------------------------RETRIEVE WINNING BID--------------------------------------------------------
+
+declare
+  auctionID INT;
+    maxAmount DECIMAL;
+begin
+  select into auctionID id from Auction where item_id = itemID;
+
+    if(auctionID is null) then
+    return -404;
+    end if;
+
+    select into maxAmount amount from Bid where auction_id = auctionID AND max(amount);
+
+    if(bidID is null) then
+    return -404;
+  end if;
+
+    return maxAmount;
+end;
+-----------------------------RETIEVE MY CURRENT BIDS---------------------------------------------------
+
+
+declare
+    lTimeCurrent TIMESTAMP;
+begin
+    SELECT into lTimeCurrent  'now';
+    RETURN QUERY
+    SELECT * FROM Bid,Auction,Item
+    WHERE Auction.end_date < lTimeCurrent AND Bid.user = userID;
+
+
+end;
+--------------------------VIEW MY PURCHASED ITEMS--------------------------------------------------
+
+declare
+    bidID INT;
+    items integer[];
+begin
+    select into bidID bid_id from Transaction where user_id = userID;
+    if(bidID is null) then
+    return -404;
+    end if;
+
+    select into items item_id from Bid where id = bid_id;
+
+    return items;
+end;
+---------------------------VIEW WINNING BID-----------------------------------------------
+
+
+declare
+begin
+	RETURN QUERY 
+    SELECT *  FROM Bid,Auction,Item
+    WHERE Bid.amount = max(amount) AND Auction.id = auctionID;
+
+end;
