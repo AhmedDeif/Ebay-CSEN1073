@@ -2,10 +2,10 @@ package BiddingApp.commands;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.Map;
-
-import redis.clients.jedis.Jedis;
 
 
 public class ReadAllAuctionCmd extends Command implements Runnable {
@@ -18,23 +18,39 @@ public class ReadAllAuctionCmd extends Command implements Runnable {
 		CallableStatement sqlProc;
 		int pUID;
 		
-		Jedis jedis = new Jedis("localhost");
-		if (jedis.get("user_id") != null)
-			pUID = Integer.parseInt(jedis.get("user_id"));
-		else
-			pUID = -1;
+		pUID = Integer.parseInt(mapUserData.get("pUID").toString()) ;
 		
-//		pUID = (int) mapUserData.get("pUID");
-		
-		sqlProc = connection.prepareCall("{?=call getAuctionsForUser(?)}");
-		sqlProc.registerOutParameter(1, Types.INTEGER);
-		sqlProc.setInt(2, pUID);
+		sqlProc = connection.prepareCall("{call getAuctionsForUser(?)}");
+		sqlProc.registerOutParameter(1, Types.REF);
+		sqlProc.setInt(1, pUID);
 		
 		sqlProc.execute();
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
-		sqlProc.close();
+//		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
+		ResultSet results = (ResultSet) sqlProc.getObject(1);
+        ResultSetMetaData metaData = results.getMetaData();
+        int count = metaData.getColumnCount();
+        StringBuffer sb = new StringBuffer();
 
-		return strbufResult;
+        
+        while(results.next()){
+    
+           for (int i = 1; i <=count-1; i++) {
+        	   sb.append(metaData.getColumnName(i)+" : " + results.getString(i)+",");
+        	   System.out.println(results.getString(i));
+			
+           }
+    	   sb.append(metaData.getColumnName(count)+" : " + results.getString(count));
+
+           System.out.println(results.getRow());
+           System.out.println("Count = " + count);
+        }
+
+        strbufResult = makeJSONResponseEnvelope( 1 , null, sb );
+        
+        results.close();
+        sqlProc.close();
+
+        return strbufResult;
 	}
 
 }

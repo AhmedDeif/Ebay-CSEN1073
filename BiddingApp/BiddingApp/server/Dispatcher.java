@@ -67,6 +67,8 @@ public class Dispatcher {
 
 	public void init() throws Exception {
 		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
+		loadHikari("localhost",5432, "ebay", "mennaelkashef", "");
+
 		loadThreadPool();
 		loadCommands();
 

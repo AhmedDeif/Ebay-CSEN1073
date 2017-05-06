@@ -4,6 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
 import java.util.Map;
 
 public class EditAuctionCmd extends Command implements Runnable {
@@ -15,21 +16,28 @@ public class EditAuctionCmd extends Command implements Runnable {
 		int auctionID, pItemID, pStartPrice;
 		Date pStartDate, pEndDate;
 		
-		auctionID = (int) mapUserData.get("auctionID");
-		pItemID = (int) mapUserData.get("pItemID");
-		pStartPrice = (int) mapUserData.get("pStartPrice");
-		pStartDate = (Date) mapUserData.get("pStartDate");
-		pEndDate = (Date) mapUserData.get("pEndDate");
+		auctionID = Integer.parseInt(mapUserData.get("auctionID").toString()) ;
+		pItemID = Integer.parseInt(mapUserData.get("pItemID").toString()) ;
+		pStartPrice = Integer.parseInt(mapUserData.get("pStartPrice").toString()) ;
 		
+
+		SimpleDateFormat sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+		java.util.Date date = sdf1.parse(mapUserData.get("pStartDate").toString());
+		pStartDate = new java.sql.Date(date.getTime());
+	
+
+		sdf1 = new SimpleDateFormat("dd-MM-yyyy");
+		date = sdf1.parse(mapUserData.get("pEndDate").toString());
+		pEndDate = new java.sql.Date(date.getTime());
 		if (pStartDate == null || pEndDate == null)
 			return null;
 		
-		sqlProc = connection.prepareCall("{?=call editAuction(?,?,?,?,?)}");
+		sqlProc = connection.prepareCall("{call editAuction(?,?,?,?,?)}");
 		sqlProc.registerOutParameter(1, Types.INTEGER);
-		sqlProc.setInt(2, auctionID);
-		sqlProc.setInt(3, pItemID);
-		sqlProc.setInt(4, pStartPrice);
-		sqlProc.setDate(5, pStartDate);
+		sqlProc.setInt(1, auctionID);
+		sqlProc.setInt(2, pItemID);
+		sqlProc.setInt(3, pStartPrice);
+		sqlProc.setDate(4, pStartDate);
 		sqlProc.setDate(5, pEndDate);
 		
 		sqlProc.execute();

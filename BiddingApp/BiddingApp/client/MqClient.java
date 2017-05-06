@@ -24,6 +24,8 @@ public class MqClient {
 			HOST = ApplicationProperties.appHost;
 			PORT = ApplicationProperties.appPort;
 			
+			System.out.println(PORT);
+			
 			Bootstrap b = new Bootstrap();
 			b.group(group).channel(NioSocketChannel.class).handler(new MqClientInitializer());
 

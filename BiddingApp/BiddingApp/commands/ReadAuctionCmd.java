@@ -2,10 +2,10 @@ package BiddingApp.commands;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.Map;
-
-import redis.clients.jedis.Jedis;
 
 
 public class ReadAuctionCmd extends Command implements Runnable {
@@ -16,24 +16,39 @@ public class ReadAuctionCmd extends Command implements Runnable {
 		StringBuffer strbufResult;
 		CallableStatement sqlProc;
 		int pUID, pID;
-
-		Jedis jedis = new Jedis("localhost");
-		if (jedis.get("user_id") != null)
-			pUID = Integer.parseInt(jedis.get("user_id"));
-		else
-			pUID = -1;
 		
-//		pUID = (int) mapUserData.get("pUID");
-		pID = (int) mapUserData.get("pID");
+		pUID = Integer.parseInt(mapUserData.get("pUID").toString()) ;
+		pID = Integer.parseInt(mapUserData.get("pID").toString()) ;
 		
-		sqlProc = connection.prepareCall("{?=call getAuctionForUser(?,?)}");
-		sqlProc.registerOutParameter(1, Types.INTEGER);
-		sqlProc.setInt(2, pUID);
-		sqlProc.setInt(3, pID);
+		sqlProc = connection.prepareCall("{call getAuctionForUser(?,?)}");
+		sqlProc.registerOutParameter(1, Types.REF);
+		sqlProc.setInt(1, pUID);
+		sqlProc.setInt(2, pID);
 		
 		sqlProc.execute();
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
-		sqlProc.close();
+		ResultSet results = (ResultSet) sqlProc.getObject(1);
+        ResultSetMetaData metaData = results.getMetaData();
+        int count = metaData.getColumnCount();
+        StringBuffer sb = new StringBuffer();
+
+        
+        while(results.next()){
+    
+           for (int i = 1; i <=count-1; i++) {
+        	   sb.append(metaData.getColumnName(i)+" : " + results.getString(i)+",");
+        	   System.out.println(results.getString(i));
+			
+           }
+    	   sb.append(metaData.getColumnName(count)+" : " + results.getString(count));
+
+           System.out.println(results.getRow());
+           System.out.println("Count = " + count);
+        }
+
+        strbufResult = makeJSONResponseEnvelope( 1 , null, sb );
+        
+        results.close();
+        sqlProc.close();
 
 		return strbufResult;
 	}

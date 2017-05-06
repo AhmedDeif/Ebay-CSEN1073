@@ -4,6 +4,8 @@ package BiddingApp.server;
 import java.util.List;
 import java.util.Map;
 
+import javax.json.JsonObject;
+
 import com.google.gson.Gson;
 
 import io.netty.handler.codec.http.HttpMethod;
@@ -11,7 +13,6 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.multipart.Attribute;
 import io.netty.handler.codec.http.multipart.HttpPostRequestDecoder;
 import io.netty.handler.codec.http.multipart.InterfaceHttpData;
-
 public class RequestParser implements Runnable {
 
 	protected ParseListener _parseListener;
@@ -25,13 +26,16 @@ public class RequestParser implements Runnable {
 	public void run() {
 		try {
 			String request = _clientHandle.getRequest();
-			
-			
-			Map<String, Object> json = new Gson().fromJson(request, Map.class);
-			
-			ClientRequest _clientRequest = new ClientRequest("createItem", null, json);
-			_parseListener.parsingFinished(_clientHandle, _clientRequest);
+			System.out.println(request);
 
+            System.out.println("got request");
+            Map<String, Object> json = new Gson().fromJson(request, Map.class);
+            System.out.println(json.get("action"));
+            String action = json.get("action").toString();
+            Map<String , Object> data = (Map<String, Object>) json.get("data");
+            System.out.println(data.toString());
+            ClientRequest _clientRequest = new ClientRequest(action, null, data);
+            _parseListener.parsingFinished(_clientHandle, _clientRequest);
 
 //			System.out.println("STARTING PARSEING REQUEST........");
 //			if (request.method().compareTo(HttpMethod.POST) == 0) {

@@ -16,11 +16,11 @@ public class DeleteAuctionCmd extends Command implements Runnable {
 		CallableStatement sqlProc;
 		int pID;
 		
-		pID = (int) mapUserData.get("pID");
+		pID = Integer.parseInt(mapUserData.get("pID").toString());
 		
-		sqlProc = connection.prepareCall("{?=call deleteAuction(?)}");
+		sqlProc = connection.prepareCall("{call deleteAuction(?)}");
 		sqlProc.registerOutParameter(1, Types.INTEGER);
-		sqlProc.setInt(2, pID);
+		sqlProc.setInt(1, pID);
 		
 		sqlProc.execute();
 		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, null);
