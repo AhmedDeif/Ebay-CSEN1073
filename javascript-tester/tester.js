@@ -576,7 +576,7 @@ function addAuction(pUID, pItemID, pStartPrice, pStartDate, pEndDate){
 
 
 // To start sending messages:
-// addBid('1', '1', '10');
+addBid('1', '1', '10');
 //attemptLogin("mohamed@m.com","johnpass");
 // deleteAuction('1')
 
@@ -596,7 +596,7 @@ function editAuction(auctionID, pItemID, pStartPrice, pStartDate, pEndDate){
 
     // sendRequest( strJSON, addUserResponse );
 }
-addAuction('2', '1', '100', '17-12-2017', '20-12-2017')
+// editAuction('2', '1', '100', '17-10-2017', '20-12-2017')
 //----------Rana's part ----------
 
 // To start sending messages:
