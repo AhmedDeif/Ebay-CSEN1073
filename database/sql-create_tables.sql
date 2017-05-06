@@ -66,3 +66,6 @@ CREATE TABLE IF NOT EXISTS LoginFailures (
 	CONSTRAINT const_fk_LoginFailures_ID FOREIGN KEY(userID) REFERENCES Users(ID) 
 );
 CREATE INDEX idx_LoginFailures_userID ON LoginFailures USING btree(userID); 
+
+
+

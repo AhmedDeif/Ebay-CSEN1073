@@ -7,62 +7,72 @@ import java.sql.ResultSetMetaData;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
+
 public class FindItemCmd extends Command implements Runnable {
 
-    public StringBuffer execute(Connection connection,  Map<String, Object> mapUserData ) throws Exception {
+	public StringBuffer execute(Connection connection, Map<String, Object> mapUserData) throws Exception {
 
-        StringBuffer        strbufResult,strbufResponseJSON;
-        CallableStatement   sqlProc;
-        int                 intItemID,
-        						nSQLResult;
+		StringBuffer strbufResult, strbufResponseJSON;
+		CallableStatement sqlProc;
+		int intItemID, nSQLResult;
 
-        intItemID =   Integer.parseInt((String)mapUserData.get( "itemID"));
+		System.out.println(" "+ mapUserData.get("itemID"));
+		intItemID = Integer.parseInt((String) mapUserData.get("itemID"));
 
-        if(intItemID <= 0 )
-            return null;
-        connection.setAutoCommit(false);
-        sqlProc = connection.prepareCall("{call findItem(?)}");
-        sqlProc.registerOutParameter(1,  Types.OTHER);
-        sqlProc.setInt(1, intItemID);
-        sqlProc.execute( );
-//        ResultSet results = sqlProc.executeQuery();
+		if (intItemID <= 0) 
+		{
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 
-//        nSQLResult = sqlProc.getInt(1);
-        ResultSet results = (ResultSet) sqlProc.getObject(1);
-        ResultSetMetaData metaData = results.getMetaData();
-        int count = metaData.getColumnCount();
-        StringBuffer sb = new StringBuffer();
+		connection.setAutoCommit(false);
+		sqlProc = connection.prepareCall("{call findItem(?)}");
+		sqlProc.registerOutParameter(1, Types.OTHER);
+		sqlProc.setInt(1, intItemID);
+		sqlProc.execute();
 
-        
-        while(results.next()){
-    
-           for (int i = 1; i <=count-1; i++) {
-        	   sb.append(metaData.getColumnName(i)+" : " + results.getString(i)+",");
-        	   System.out.println(results.getString(i));
-			
-           }
-    	   sb.append(metaData.getColumnName(count)+" : " + results.getString(count));
+		ResultSet results = (ResultSet) sqlProc.getObject(1);
+		ResultSetMetaData metaData = results.getMetaData();
+		int count = metaData.getColumnCount();
+		StringBuffer sb = new StringBuffer();
+        int rows = results.getRow();
 
-           System.out.println(results.getRow());
-           System.out.println("Count = " + count);
-        }
+		System.out.println("SQL Result:");
+		System.out.println("Rows: " + results.getRow());
+		System.out.println("Count = " + count);
+		System.out.println("-----------");
+		JsonObject data = new JsonObject();
+		while (results.next()) {
 
-        strbufResult = makeJSONResponseEnvelope( 1 , null, sb );
-        
-        results.close();
-        sqlProc.close();
-//        if( nSQLResult >= 0 ){
-//            // Cache.addSession( strSessionID, strEmail );
-//            System.err.println(" view items" );
-//            Map<String, Object> mapResult = new HashMap<String, Object>( );
-//            
-//            mapResult.put( "item", Integer.toString( nSQLResult));
-//            strbufResponseJSON  =   serializeMaptoJSON( mapResult, null );
-//            strbufResult = makeJSONResponseEnvelope( 0, null, strbufResponseJSON  );
-//        }
-//        else
-//            strbufResult = makeJSONResponseEnvelope( nSQLResult , null, null );
+			for (int i = 1; i <= count; i++) {
+				System.out.println(results.getString(i));
+				data.addProperty(metaData.getColumnName(i), results.getString(i));
+			}
+			sb.append(data.toString());
+			rows +=1;
+			System.out.println(results.getRow());
+			System.out.println("Count = " + count);
+		}
 
-        return strbufResult;
-    }
+		System.out.println("-----------");
+		System.out.println(sb.toString());
+		if (rows > 0) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+			sqlProc.close();
+			results.close();
+			return strbufResult;
+		} else {
+			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
+	}
 }

@@ -3,7 +3,14 @@ package UserApp.server;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Controller implements ParseListener {
+import UserApp.server.Cache;
+import UserApp.server.ClientHandle;
+import UserApp.server.ClientRequest;
+import UserApp.server.Dispatcher;
+import UserApp.server.ParseListener;
+import UserApp.server.RequestParser;
+
+class Controller implements ParseListener {
 
 	protected Dispatcher _dispatcher;
 	protected ExecutorService _threadPoolParsers;
@@ -39,7 +46,10 @@ public class Controller implements ParseListener {
 					|| strAction.equalsIgnoreCase("calculateRating")|| strAction.equalsIgnoreCase("createCategory")
 					|| strAction.equalsIgnoreCase("editCategory") || strAction.equalsIgnoreCase("createItemCategory")  
 					|| strAction.equalsIgnoreCase("deleteCategory") || strAction.equalsIgnoreCase("findCategory")
-					|| strAction.equalsIgnoreCase("findItemCategory") || strAction.equalsIgnoreCase("viewCategory")) {
+					|| strAction.equalsIgnoreCase("findItemCategory") || strAction.equalsIgnoreCase("viewCategory") 
+					||strAction.equalsIgnoreCase("findUser") 
+					|| strAction.equalsIgnoreCase("createUser") || strAction.equalsIgnoreCase("getUser")  || strAction.equalsIgnoreCase("getUserCommand")
+					) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;

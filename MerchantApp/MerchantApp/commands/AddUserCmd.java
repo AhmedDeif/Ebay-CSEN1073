@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
 
+import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -25,10 +26,14 @@ public class AddUserCmd extends Command implements Runnable {
 		password = (String) mapUserData.get("password");
 		// gender = (String) mapUserData.get("gender");
 
-		// if (firstName == null || strItemName.trim().length() == 0 || dblPrice
-		// <= 0 || intQuantity <= 0
-		// || intSellerID <= 0)
-		// return null;
+		if (firstName == null || lastName.trim().length() == 0 || email.trim().length() <= 0
+				|| password.trim().length() <= 0) {
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 		System.out.println("nameeee:  " + firstName);
 
 		sqlProc = connection.prepareCall("{call addUser(?,?,?,?)}");
@@ -40,15 +45,22 @@ public class AddUserCmd extends Command implements Runnable {
 		sqlProc.execute();
 		StringBuffer sb = new StringBuffer();
 		sb.append(sqlProc.getInt(1));
-
-		strbufResult = makeJSONResponseEnvelope(sqlProc.getInt(1), null, sb);
-
-	
-
-		Jedis jedis = new Jedis("localhost");
-		jedis.set("user_id", "" + sqlProc.getInt(1));
-		sqlProc.close();
-		return strbufResult;
+		
+		System.out.println("-----------");
+		System.out.println(sb.toString());
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+			sqlProc.close();
+			return strbufResult;
+		} else {
+			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 	}
 
 }

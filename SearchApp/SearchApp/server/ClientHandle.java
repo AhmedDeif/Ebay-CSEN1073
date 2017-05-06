@@ -5,6 +5,9 @@ import java.net.InetSocketAddress;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpRequest;
 import SearchApp.server.ServerHandler;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+
 
 public class ClientHandle {
 

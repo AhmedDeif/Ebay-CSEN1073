@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import UserApp.client.MqClient;
+import UserApp.server.ClientHandle;
+import UserApp.server.ServerHandler;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
@@ -57,27 +59,41 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 
 	@Override
 	public boolean acceptInboundMessage(Object msg) throws Exception {
-//		HttpRequest request;
-//
-//		request = (HttpRequest) msg;
-//		if (request.method().compareTo(HttpMethod.POST) == 0)
-//			return true;
-//		return false;
 		return true;
 	}
 
 	@Override
 	protected void messageReceived(ChannelHandlerContext ctx, Object msg) {
 
-		System.err.println(" got a request: " + msg);
 		
-			log.info("SERVER GOT MESSAGE NOW SENDING TO CLIENT..");
-//			ctx.writeAndFlush(msg);
-//			TODO: CHECK IF MESSAGE JSON CALL EXECUTE COMMAND
+			log.info("SERVER GOT MESSAGE NOW PROCCESSING.." + ", Type: " + msg.getClass().getName());
 
-			String message = (String) msg;
-			_controller.execRequest(new ClientHandle(ctx, message, this));
+			try {
+				String message = (String) msg;
+				
+				log.info("MESSAGE TO BE PROCESSED: " + message +  "\n");
 
+				_controller.execRequest(new ClientHandle(ctx, message, this));
+				
+				synchronized (this) {
+					this.wait();
+				}
+				
+				if (buf != null) {
+					System.err.println(" sending back" + buf.toString());
+					String outboundMessage = buf.toString();
+					outboundMessage += "\r\n";
+					ChannelFuture f = ctx.writeAndFlush(outboundMessage);
+					
+				} else {
+					System.err.println(" Got a bad request");
+					
+				}	
+			} catch (Exception exp) {
+				exp.printStackTrace();
+			}
+			
+			
 
 //		if (msg instanceof HttpRequest) {
 //
@@ -126,6 +142,8 @@ public class ServerHandler extends SimpleChannelInboundHandler<Object> {
 	}
 
 	private boolean writeResponse(HttpObject currentObj, ChannelHandlerContext ctx) {
+		log.info("PASSING RESPONSE TO MQCLIENT");
+		
 		// Decide whether to close the connection or not.
 		boolean keepAlive = HttpHeaderUtil.isKeepAlive(request);
 		// Build the response object.

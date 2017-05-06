@@ -5,11 +5,16 @@ import java.sql.ResultSetMetaData;
 import java.util.ArrayList;
 import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.zaxxer.hikari.HikariDataSource;
 
 import SearchApp.server.ClientHandle;
 import SearchApp.server.ClientRequest;
 import SearchApp.server.ResponseCodes;
+
 
 public abstract class Command {
 
@@ -39,8 +44,12 @@ public abstract class Command {
 				else
 					_clientHandle.terminateClientRequest();
 			} catch (Exception exp) {
-				System.err.println(exp.toString());
-				_clientHandle.terminateClientRequest();
+				exp.printStackTrace();
+				StringBuffer strbufError = new StringBuffer();
+				String str = "Internal Server Error";
+				strbufError.append(str);
+				strbufError = makeJSONResponseEnvelope(500, null, strbufError);
+				_clientHandle.passResponsetoClient(strbufError);
 			} finally {
 				closeConnectionQuietly(connection);
 			}
@@ -63,37 +72,40 @@ public abstract class Command {
 			String strData = "";
 			Map<String, Object> mapInputData;
 			String strKey;
-
-			strbufJSON = new StringBuffer();
-			strbufJSON.append("{");
-			strbufJSON.append("\"responseTo\":\"" + _clientRequest.getAction() + "\",");
-			if (_clientRequest.getSessionID() != null)
-				strbufJSON.append("\"sessionID\":\"" + _clientRequest.getSessionID() + "\",");
-
-			strbufJSON.append("\"StatusID\":\"" + nResponse + "\",");
 			strStatusMsg = (String) ResponseCodes.getMessage(Integer.toString(nResponse));
-			strbufJSON.append("\"StatusMsg\":\"" + strStatusMsg + "\",");
 
+			Map<String, Object> propertiesMap = _clientRequest.getProperties();
+			Gson gson = new Gson();
+			
+			JsonObject responseJson = new JsonObject();
+			
+			JsonElement propertiesJson = gson.toJsonTree(propertiesMap);
+			
+			responseJson.addProperty("responseTo", _clientRequest.getAction() );
+			responseJson.addProperty("statusID", nResponse );
+			responseJson.addProperty("statusMsg", strStatusMsg);
+			
+			
+			if (_clientRequest.getSessionID() != null)
+				responseJson.addProperty("sessionID", _clientRequest.getSessionID());
+			
+			
 			if (strbufRequestData != null)
-				strbufJSON.append("\"requestData\":{" + strbufRequestData + "},");
-
+				responseJson.addProperty("requestData", strbufRequestData.toString());
+			
 			if (strbufResponseData != null) {
-				if (strbufResponseData.charAt(0) == '[')
-					strbufJSON.append("\"responseData\":" + strbufResponseData); // if
-																					// it
-																					// is
-																					// a
-																					// list,
-																					// no
-																					// curley
-				else
-					strbufJSON.append("\"responseData\":{" + strbufResponseData + "}");
+				JsonParser parser = new JsonParser();
+				System.out.println("Bufferrr: "  +  strbufResponseData.toString() ) ;
+				JsonElement strbufResponseJson = parser.parse(strbufResponseData.toString());
+				responseJson.add("responseData", strbufResponseJson);
 			}
-			if (strbufJSON.charAt(strbufJSON.length() - 1) == ',')
-				strbufJSON.deleteCharAt(strbufJSON.length() - 1);
-
-			strbufJSON.append("}");
-			return strbufJSON;
+			
+			
+			
+			responseJson.add("properties", propertiesJson);
+			
+			StringBuffer resBuf = new StringBuffer(gson.toJson(responseJson));
+			return resBuf;
 		}
 
 		protected StringBuffer serializeRequestDatatoJSON(ArrayList arrFieldstoKeep) throws Exception {

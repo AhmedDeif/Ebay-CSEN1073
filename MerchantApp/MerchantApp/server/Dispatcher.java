@@ -49,7 +49,7 @@ public class Dispatcher {
 		_hikariDataSource.setUsername(strUserName);
 		_hikariDataSource.setPassword(strPassword);
 
-//		_hikariDataSource.setInitializationFailFast(true);
+		_hikariDataSource.setInitializationFailFast(true);
 	}
 
 	protected void loadCommands() throws Exception {
@@ -74,9 +74,10 @@ public class Dispatcher {
 	}
 
 	public void init() throws Exception {
-		System.out.println(ApplicationProperties.appHost);
-//		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
-		loadHikari("localhost", 5432, "ebay","postgres", "2428");
+		System.out.println("APPLICATION HOST: " + ApplicationProperties.appHost);
+		loadHikari(ApplicationProperties.dbHost,ApplicationProperties.dbPort, ApplicationProperties.dbName, ApplicationProperties.dbUser, ApplicationProperties.dbPassword);
+//		loadHikari("localhost", 5432, "ebay","postgres", "2428");
+
 		loadThreadPool();
 		loadCommands();
 

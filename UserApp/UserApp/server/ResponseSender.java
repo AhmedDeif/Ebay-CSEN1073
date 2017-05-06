@@ -2,6 +2,8 @@ package UserApp.server;
 
 import java.util.Set;
 
+import UserApp.server.ClientHandle;
+import UserApp.server.ClientRequest;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.Cookie;
