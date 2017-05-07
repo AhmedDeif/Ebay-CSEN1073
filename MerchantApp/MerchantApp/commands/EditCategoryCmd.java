@@ -4,6 +4,8 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Types;
 import java.util.Map;
+
+import com.google.gson.JsonObject;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
@@ -24,8 +26,13 @@ public class EditCategoryCmd extends Command implements Runnable {
 		// System.out.println("id " + intID);
 
 		if (strCategoryName == null || strCategoryName.trim().length() == 0 || intID <= 0)
-			return null;
-
+		{
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 		sqlProc = connection.prepareCall("{call editCategory(?,?)}");
 		sqlProc.registerOutParameter(1, Types.VARCHAR);
 		sqlProc.setString(2, strCategoryName);
@@ -34,11 +41,23 @@ public class EditCategoryCmd extends Command implements Runnable {
 		sqlProc.execute();
 		StringBuffer sb = new StringBuffer();
 		sb.append(sqlProc.getString(1));
-		strbufResult = makeJSONResponseEnvelope(1, null, sb);
-		oldName = sqlProc.getString(1);
-		sqlProc.close();
+		System.out.println("-----------");
+		System.out.println(sb.toString());
+		if (!sb.toString().equals(null)) {
+			strbufResult = makeJSONResponseEnvelope(200, null, sb);
+			sqlProc.close();
+
+			return strbufResult;
+		} else {
+			sqlProc.close();
+			System.out.println("DB returned null!");
+			StringBuffer errorBuffer = new StringBuffer();
+			JsonObject error = new JsonObject();
+			error.addProperty("errorMsg", "error");
+			errorBuffer.append(error.toString());
+			return errorBuffer;
+		}
 
 
-		return strbufResult;
 	}
 }

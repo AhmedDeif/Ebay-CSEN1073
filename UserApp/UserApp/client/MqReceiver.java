@@ -1,5 +1,6 @@
 package UserApp.client;
 
+
 import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -11,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import com.rabbitmq.client.Connection;
 import com.rabbitmq.client.ConnectionFactory;
 
+import UserApp.client.MqClientHandler;
+import UserApp.client.MqReceiver;
+import UserApp.client.MqRecieverThread;
 import UserApp.config.ApplicationProperties;
 
 /**
@@ -41,6 +45,7 @@ public class MqReceiver {
 		connnectionFactory.setUsername(ApplicationProperties.mqRequestUser);
 		connnectionFactory.setPassword(ApplicationProperties.mqRequestPassword);
 		connnectionFactory.setPort(ApplicationProperties.mqResponsePort);
+		connnectionFactory.setRequestedHeartbeat(10);
 		connnectionFactory.setVirtualHost("/");
 		
 		this.clientHandler = clientHandler;
@@ -55,6 +60,7 @@ public class MqReceiver {
 	public void start() {
 		try {
 			Connection connection = connnectionFactory.newConnection();
+
 			MqRecieverThread thread = new MqRecieverThread(connection, exchangeName, queueName, routeKey, queueTag, clientHandler);
 			executors.execute(thread);
 

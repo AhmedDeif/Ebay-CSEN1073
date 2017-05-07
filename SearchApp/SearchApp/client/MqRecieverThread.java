@@ -11,6 +11,8 @@ import SearchApp.client.MqClientHandler;
 import SearchApp.client.MqConsumer;
 import SearchApp.client.MqRecieverThread;
 
+
+
 public class MqRecieverThread extends Thread {
 	private static final Logger log = LoggerFactory.getLogger(MqRecieverThread.class);
 
@@ -56,3 +58,4 @@ public class MqRecieverThread extends Thread {
 		}
 	}
 }
+

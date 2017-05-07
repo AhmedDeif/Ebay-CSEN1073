@@ -3,7 +3,14 @@ package UserApp.server;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-public class Controller implements ParseListener {
+import UserApp.server.Cache;
+import UserApp.server.ClientHandle;
+import UserApp.server.ClientRequest;
+import UserApp.server.Dispatcher;
+import UserApp.server.ParseListener;
+import UserApp.server.RequestParser;
+
+class Controller implements ParseListener {
 
 	protected Dispatcher _dispatcher;
 	protected ExecutorService _threadPoolParsers;
@@ -25,21 +32,11 @@ public class Controller implements ParseListener {
 		try {
 			String strAction;
 			strAction = clientRequest.getAction();
-			if (strAction.equalsIgnoreCase("deleteItemCategory") || strAction.equalsIgnoreCase("createItem") 
-					|| strAction.equalsIgnoreCase("createCart") || strAction.equalsIgnoreCase("deleteCart") ||
-					strAction.equalsIgnoreCase("findCart") || strAction.equalsIgnoreCase("addItemToCart")
-					|| strAction.equalsIgnoreCase("updateItemInCart") || strAction.equalsIgnoreCase("deleteItemInCart")
-					|| strAction.equalsIgnoreCase("viewItemsInCart") || strAction.equalsIgnoreCase("editItem") ||
-					strAction.equalsIgnoreCase("deleteItem")||strAction.equalsIgnoreCase("findItem") ||
-					strAction.equalsIgnoreCase("viewItem") || strAction.equalsIgnoreCase("createComment") || 
-					strAction.equalsIgnoreCase("editComment") || strAction.equalsIgnoreCase("viewComment") ||
-					strAction.equalsIgnoreCase("findComment") || strAction.equalsIgnoreCase("createUserRating")
-					|| strAction.equalsIgnoreCase("editUserRating") || strAction.equalsIgnoreCase("deleteUserRating")
-					|| strAction.equalsIgnoreCase("viewItemUserRating")|| strAction.equalsIgnoreCase("findItemRating") 
-					|| strAction.equalsIgnoreCase("calculateRating")|| strAction.equalsIgnoreCase("createCategory")
-					|| strAction.equalsIgnoreCase("editCategory") || strAction.equalsIgnoreCase("createItemCategory")  
-					|| strAction.equalsIgnoreCase("deleteCategory") || strAction.equalsIgnoreCase("findCategory")
-					|| strAction.equalsIgnoreCase("findItemCategory") || strAction.equalsIgnoreCase("viewCategory")) {
+			if ( strAction.equalsIgnoreCase("createUser")
+					|| strAction.equalsIgnoreCase("getUser") 
+					|| strAction.equalsIgnoreCase("getUserCommand")
+					|| strAction.equalsIgnoreCase("addAddressCommand")
+					 || strAction.equalsIgnoreCase("getUserCommand")) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;

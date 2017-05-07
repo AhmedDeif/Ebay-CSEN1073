@@ -1,5 +1,7 @@
 package UserApp.server;
 
+import UserApp.server.ClientHandle;
+import UserApp.server.ClientRequest;
 
 public interface ParseListener{
 

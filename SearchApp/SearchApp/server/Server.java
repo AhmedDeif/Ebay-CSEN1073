@@ -1,5 +1,7 @@
 package SearchApp.server;
 
+import SearchApp.client.MqClient;
+
 import SearchApp.client.MqSender;
 import SearchApp.config.ApplicationProperties;
 import io.netty.bootstrap.ServerBootstrap;
@@ -16,6 +18,7 @@ import SearchApp.server.Cache;
 import SearchApp.server.Controller;
 import SearchApp.server.ServerInitializer;
 
+
 public final class Server {
 
 	public static int PORT;
@@ -28,17 +31,17 @@ public final class Server {
 		// Configure the server.
 		EventLoopGroup bossGroup = new NioEventLoopGroup(5);
 		EventLoopGroup workerGroup = new NioEventLoopGroup();
+		
 		try {
+			ApplicationProperties.readConfiguration("config.properties");
+			PORT = ApplicationProperties.appPort;
+			
 			_controller = new Controller();
 			_controller.init();
 
 			Cache.init();
 			Cache.loadFromDatabase();
-
-			ApplicationProperties.readConfiguration("config.properties");
-			PORT = ApplicationProperties.appPort;
-			
-			
+		
 			ServerBootstrap serverBoot = new ServerBootstrap();
 			serverBoot.group(bossGroup, workerGroup);
 			serverBoot.channel(NioServerSocketChannel.class);
@@ -52,13 +55,31 @@ public final class Server {
 
 			Channel channel = serverBoot.bind(PORT).sync().channel();
 			
+//			startMqClient();
+
 
 			System.err.println("Services running on  http" + "://127.0.0.1:" + PORT + '/');
 			channel.closeFuture().sync();
-
+			
 		} finally {
 			bossGroup.shutdownGracefully();
 			workerGroup.shutdownGracefully();
 		}
+	}
+	
+	public static void startMqClient() {
+		Runnable mqClientRunnable = new Runnable() {
+			
+			@Override
+			public void run() {
+				// TODO Auto-generated method stub
+				MqClient client = new MqClient();
+				client.init();		
+			}
+		};
+		
+		Thread mqClientThread = new Thread(mqClientRunnable);
+		mqClientThread.start();
+
 	}
 }

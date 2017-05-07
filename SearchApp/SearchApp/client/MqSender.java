@@ -11,12 +11,16 @@ import com.rabbitmq.client.ConnectionFactory;
 
 import  SearchApp.config.ApplicationProperties;
 
+import com.rabbitmq.client.AMQP.BasicProperties;
+
+
+
 /**
  * RabbitMQ Sender 
  */
 public class MqSender {
 
-	private ConnectionFactory connnectionFactory;
+	public ConnectionFactory connnectionFactory;
 
 	private String mqSenderHost;
 	private int mqSenderPort;
@@ -46,7 +50,7 @@ public class MqSender {
 		
 	}
 	
-	public void send(String data) {
+	public void send(String data, BasicProperties properties) {
 		try {
 			Connection connection;
 			connection = connnectionFactory.newConnection();
@@ -55,7 +59,9 @@ public class MqSender {
 			channel.queueDeclare(queueName, true, false, false, null);
 			channel.queueBind(queueName, exchangeName, routeKey);
 			
-			channel.basicPublish(exchangeName, routeKey, null , data.getBytes());
+			channel.basicPublish(exchangeName, routeKey, properties , data.getBytes());
+			
+			System.out.println("PUBLISHED RESPONSE: " + data);
 			
 			channel.close();
 			connection.close();

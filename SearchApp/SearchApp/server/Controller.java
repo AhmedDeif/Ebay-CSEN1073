@@ -2,8 +2,16 @@ package SearchApp.server;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+///////
 
- class Controller implements ParseListener {
+import SearchApp.server.Cache;
+import SearchApp.server.ClientHandle;
+import SearchApp.server.ClientRequest;
+import SearchApp.server.Dispatcher;
+import SearchApp.server.ParseListener;
+import SearchApp.server.RequestParser;
+
+class Controller implements ParseListener {
 
 	protected Dispatcher _dispatcher;
 	protected ExecutorService _threadPoolParsers;
@@ -25,7 +33,8 @@ import java.util.concurrent.Executors;
 		try {
 			String strAction;
 			strAction = clientRequest.getAction();
-			if (strAction.equalsIgnoreCase("search")) {
+			if (strAction.equalsIgnoreCase("search") 
+					) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;

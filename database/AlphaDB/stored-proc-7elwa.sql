@@ -494,13 +494,13 @@ returns INT as'
 
 ---------------------------------------------------------------------------------------------------------------------------------------
 create or replace function deleteCart(
-    ID                      INT
+    _cartID                      INT
     )
 returns INT as'
 
     begin
-       delete from Carts where Carts.ID = ID ;
-   	return ID;
+       delete from Carts where id= _cartID ;
+   	return id;
 	end;
 
 ' language 'plpgsql';

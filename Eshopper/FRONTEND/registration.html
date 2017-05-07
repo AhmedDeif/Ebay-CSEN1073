@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<head>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<body>
+	<div id="register" class="animate form">
+		<!-- <form  action="" autocomplete="on"> -->
+			<h1> Sign up </h1>
+			<p>
+				<label for="usernamesignup" class="uname" data-icon="u">Your First Name</label>
+				<input id="firstname" name="usernamesignup"   type="text" placeholder="First Name" />
+			</p>
+			<p>
+				<label for="usernamesignup" class="uname" data-icon="u">Your Last Name</label>
+				<input id="lastname" name="usernamesignup"   type="text" placeholder="Last Name" />
+			</p>
+			<p>
+				<label for="emailsignup" class="youmail" data-icon="e" > Your Email</label>
+				<input id="email" name="emailsignup"   type="email" placeholder="Email@mail.com"/>
+			</p>
+			<p>
+				<label for="passwordsignup" class="youpasswd" data-icon="p">Your Password </label>
+				<input id="password" name="passwordsignup"   type="password" placeholder="Password"/>
+			</p>
+			<p>
+				<label for="passwordsignup_confirm" class="youpasswd" data-icon="p">Please confirm your password </label>
+				<input id="passwordconfirm" name="passwordsignup_confirm"   type="password" placeholder="Password"/>
+			</p>
+			<p class="signin button">
+				<input id="submit-btn" type="submit" value="Sign up"/>
+			</p>
+			<p class="change_link">
+				Already a member ?
+				<a href="LoginPage.html" class="to_register"> Go and log in </a>
+			</p>
+		<!-- </form> -->
+	</div>
+
+	<span id="res"></span>
+
+	<script>
+	$(document).ready(function(){
+		$("#submit-btn").click(function(){
+			var firstName = $("#firstname").val();
+			var lastName = $("#lastname").val();
+			var email = $("#email").val();
+			var password = $("#password").val();
+
+			var sendInfo = {
+				firstName,
+				lastName,
+				email,
+				password
+			};
+
+			// console.log(sendInfo);
+
+			$.ajax({
+				url: "http://localhost:9000/user",
+				method: "POST",
+				data: sendInfo,
+				failure: function(err) {
+					console.log(err);
+				},
+				success: function(result){
+					console.log(result);
+					console.log("RANAAA###########");
+					window.location = 'profile.html'
+					// window.localStorage.setItem("id", )
+				}});
+			});
+		});
+	</script>
+</body>
