@@ -26,7 +26,8 @@ public class CreateItemCmd extends Command implements Runnable {
 
 		strItemName = (String) mapUserData.get("itemName");
 		strDecription = (String) mapUserData.get("description");
-		intQuantity = Integer.parseInt((String) mapUserData.get("quantity"));
+		System.out.println("Quantity " + mapUserData.get("itemQuantity"));
+		intQuantity = Integer.parseInt((String) mapUserData.get("itemQuantity"));
 
 		// Jedis jedis = new Jedis("localhost");
 		// if (jedis.get("user_id") != null)

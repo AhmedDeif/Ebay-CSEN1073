@@ -9,7 +9,7 @@
 /*scroll to top*/
 
 $(document).ready(function(){
-	$(function () {
+	// $(function () {
 		// $.scrollUp({
 	 //        scrollName: 'scrollUp', // Element ID
 	 //        scrollDistance: 300, // Distance from top/bottom before showing element (px)
@@ -62,16 +62,21 @@ $(document).ready(function(){
 						// let itemName =   JSON.parse(result).responseData.itemName;
 						window.localStorage.setItem("search_Txt", JSON.stringify(txt));
 					
-						
 						window.location = 'search_results.html';
 
 
 
 					}});
 				});
+	
+		
 
+
+		
+});
 			
-		});
 
-	});
-	//form
+
+
+
+

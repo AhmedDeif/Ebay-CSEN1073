@@ -282,11 +282,11 @@
 						<div class="col-sm-7">
 							<div class="product-information"><!--/product-information-->
 								<img src="images/product-details/new.jpg" class="newarrival" alt="" />
-								<h2>Anne Klein Sleeveless Colorblock Scuba</h2>
-								<p>Web ID: 1089772</p>
+								<h2 id="itemname">Anne Klein Sleeveless Colorblock Scuba</h2>
+								<p id="description" >Web ID: 1089772</p>
 								<img src="images/product-details/rating.png" alt="" />
 								<span>
-									<span>US $59</span>
+									<span id="itemprice" >US $59</span>
 									<label>Quantity:</label>
 									<input type="text" value="3" />
 									<button type="button" class="btn btn-fefault cart">
@@ -666,6 +666,25 @@
     		let test = window.localStorage.getItem("search_Txt");
 			// console.log("==>> "+test.itemName);
 			console.log("==>==> "+JSON.parse(test).itemName);
+			let id = window.location.search.slice(1);
+			var sendInfo = {
+				itemID: id
+			};
+
+			$.ajax({
+				url: "http://localhost:9000/find_item",
+				method: "POST",
+				data: sendInfo,
+				success: function(result){
+					console.log(result);
+          let itemname = JSON.parse(result).responseData.firstname;
+          let itemprice = JSON.parse(result).responseData.lastname;
+          let description = JSON.parse(result).responseData.email;
+
+          $("#itemname").text(itemname);
+          $("#description").text(description);
+          $("#itemprice").text(itemprice);
+				}});
 
 
     </script>

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <title>Login | E-Shopper</title>
+    <title>Add Item | E-Shopper</title>
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/font-awesome.min.css" rel="stylesheet">
     <link href="css/prettyPhoto.css" rel="stylesheet">
@@ -134,51 +134,52 @@
 						</div>
 					</div>
 					<div class="col-sm-3">
-						<div class="search_box pull-right">
-							<input type="text" placeholder="Search"/>
-						</div>
+						<form action="#" class="searchform2">
+							<div class = "search_box pull-right">
+								<input  id="searchText" type="text" placeholder="Search" />
+								<!-- <button type="submit" class="btn btn-default"><i class="fa fa-arrow-circle-o-right"></i></button> -->
+								</div>
+							</form>
 					</div>
 				</div>
 			</div>
 		</div><!--/header-bottom-->
 	</header><!--/header-->
 	
+
 	<section id="form"><!--form-->
 		<div class="container">
 			<div class="row">
-				<div class="col-sm-4 col-sm-offset-1">
+					<div class="col-sm-4 col-sm-offset-1">
 					<div class="login-form"><!--login form-->
-						<h2>Login to your account</h2>
+						<h2>Create a Category</h2>
 						<form action="#">
-							<input type="text" placeholder="Name" />
-							<input type="email" placeholder="Email Address" />
-							<span>
-								<input type="checkbox" class="checkbox"> 
-								Keep me signed in
-							</span>
-							<button type="submit" class="btn btn-default">Login</button>
+							<input id ="categoryName" type="text" placeholder="Category Name" />
+							<button id = "create-btn" type="submit" class="btn btn-default">Add Category</button>
 						</form>
 					</div><!--/login form-->
 				</div>
 				<div class="col-sm-1">
 					<h2 class="or">OR</h2>
 				</div>
+
 				<div class="col-sm-4">
 					<div class="signup-form"><!--sign up form-->
-						<h2>New User Signup!</h2>
+						<h2>Add Item!</h2>
 						<form action="#">
-							<input id="firstname" type="text" placeholder="First Name"/>
-							<input id="lastname" type="text" placeholder="Last Name"/>
-							<input id="email" type="email" placeholder="Email Address"/>
-							<input id="password" type="password" placeholder="Password"/>
-							<button id="submit-btn" type="submit" class="btn btn-default">Signup</button>
+							<input id="itemName" type="text" placeholder="Item Name"/>
+							<input id="itemPrice" type="text" placeholder="Price"/>
+							<input id="itemQuantity" type="text" placeholder="Quantity"/>
+							<input id="itemDescription" type="text" placeholder="Description"/>
+
+							<button id="submit-btn" type="submit" class="btn btn-default">Add Item</button>
 						</form>
 					</div><!--/sign up form-->
 				</div>
 			</div>
 		</div>
 	</section><!--/form-->
-	
+
 	
 	<footer id="footer"><!--Footer-->
 		<div class="footer-top">
@@ -340,31 +341,37 @@
 	
 
   
+  	
     <script src="js/jquery.js"></script>
 	<script src="js/price-range.js"></script>
     <script src="js/jquery.scrollUp.min.js"></script>
 	<script src="js/bootstrap.min.js"></script>
     <script src="js/jquery.prettyPhoto.js"></script>
     <script src="js/main.js"></script>
-    <script>
+<script>
 		$(document).ready(function(){
+
 			$("#submit-btn").click(function(){
-				var firstName = $("#firstname").val();
-				var lastName = $("#lastname").val();
-				var email = $("#email").val();
-				var password = $("#password").val();
+				var itemName = $("#itemName").val();
+				var price = $("#itemPrice").val();
+				var itemQuantity = $("#itemQuantity").val();
+				var description = $("#itemDescription").val();
+				var sellerID = window.localStorage.getItem("id");
+				var categoryID = "19";
+				console.log("ITEM DATA: " + sellerID);
 
 				var sendInfo = {
-					firstName,
-					lastName,
-					email,
-					password
+					itemName,
+					price,
+					itemQuantity,
+					sellerID,
+					categoryID
 				};
 
 				// console.log(sendInfo);
 
 				$.ajax({
-					url: "http://localhost:9000/user",
+					url: "http://localhost:9000/item",
 					method: "POST",
 					data: sendInfo,
 					failure: function(err) {
@@ -372,16 +379,47 @@
 					},
 					success: function(result){
 						console.log(JSON.parse(result).responseData);
-						let id = JSON.parse(result).responseData;
+						let itemID = JSON.parse(result).responseData;
 						console.log("RANAAA###########");
-						window.localStorage.setItem("id", id);
+						window.localStorage.setItem("categoryID", itemID);
 						// window.location = 'FRONTEND/profile.html'
-						window.location = 'profileRana.html'
+						window.location = 'index.html'
 					}});
 				});
+
+
+			$("#create-btn").click(function(){
+				var categoryName = $("#categoryName").val();
+				
+				console.log("ITEM DATA: " + categoryName);
+
+				var sendInfo = {
+					categoryName
+				};
+
+				// console.log(sendInfo);
+
+				$.ajax({
+					url: "http://localhost:9000/category",
+					method: "POST",
+					data: sendInfo,
+					failure: function(err) {
+						console.log(err);
+					},
+					success: function(result){
+						console.log(JSON.parse(result).responseData);
+						let categoryID = JSON.parse(result).responseData;
+						console.log("RANAAA###########");
+						window.localStorage.setItem("categoryID", categoryID);
+						// window.location = 'FRONTEND/profile.html'
+						window.location = 'index.html'
+					}});
+				});
+
+
+
 			});
 		</script>
-
 
 </body>
 </html>

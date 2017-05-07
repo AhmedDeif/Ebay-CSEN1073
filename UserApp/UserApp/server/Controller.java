@@ -32,24 +32,11 @@ class Controller implements ParseListener {
 		try {
 			String strAction;
 			strAction = clientRequest.getAction();
-			if (strAction.equalsIgnoreCase("deleteItemCategory") || strAction.equalsIgnoreCase("createItem") 
-					|| strAction.equalsIgnoreCase("createCart") || strAction.equalsIgnoreCase("deleteCart") ||
-					strAction.equalsIgnoreCase("findCart") || strAction.equalsIgnoreCase("addItemToCart")
-					|| strAction.equalsIgnoreCase("updateItemInCart") || strAction.equalsIgnoreCase("deleteItemInCart")
-					|| strAction.equalsIgnoreCase("viewItemsInCart") || strAction.equalsIgnoreCase("editItem") ||
-					strAction.equalsIgnoreCase("deleteItem")||strAction.equalsIgnoreCase("findItem") ||
-					strAction.equalsIgnoreCase("viewItem") || strAction.equalsIgnoreCase("createComment") || 
-					strAction.equalsIgnoreCase("editComment") || strAction.equalsIgnoreCase("viewComment") ||
-					strAction.equalsIgnoreCase("findComment") || strAction.equalsIgnoreCase("createUserRating")
-					|| strAction.equalsIgnoreCase("editUserRating") || strAction.equalsIgnoreCase("deleteUserRating")
-					|| strAction.equalsIgnoreCase("viewItemUserRating")|| strAction.equalsIgnoreCase("findItemRating") 
-					|| strAction.equalsIgnoreCase("calculateRating")|| strAction.equalsIgnoreCase("createCategory")
-					|| strAction.equalsIgnoreCase("editCategory") || strAction.equalsIgnoreCase("createItemCategory")  
-					|| strAction.equalsIgnoreCase("deleteCategory") || strAction.equalsIgnoreCase("findCategory")
-					|| strAction.equalsIgnoreCase("findItemCategory") || strAction.equalsIgnoreCase("viewCategory") 
-					||strAction.equalsIgnoreCase("findUser") 
-					|| strAction.equalsIgnoreCase("createUser") || strAction.equalsIgnoreCase("getUser")  || strAction.equalsIgnoreCase("getUserCommand")
-					) {
+			if ( strAction.equalsIgnoreCase("createUser")
+					|| strAction.equalsIgnoreCase("getUser") 
+					|| strAction.equalsIgnoreCase("getUserCommand")
+					|| strAction.equalsIgnoreCase("addAddressCommand")
+					 || strAction.equalsIgnoreCase("getUserCommand")) {
 				_dispatcher.dispatchRequest(clientHandle, clientRequest);
 			} else {
 				String strSessionID;

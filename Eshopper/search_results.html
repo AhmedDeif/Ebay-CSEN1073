@@ -143,9 +143,10 @@
 
 
 <div class="col-sm-9 padding-right">
-					<div class="features_items"><!--features_items-->
 						<h2 class="title text-center">Features Items</h2>
-						<div class="col-sm-4">
+
+					<div class="features_items"><!--features_items-->
+						<!-- <div class="col-sm-4">
 							<div class="product-image-wrapper">
 								<div class="single-products">
 										<div class="productinfo text-center">
@@ -165,8 +166,8 @@
 								<div class="choose">
 									<ul class="nav nav-pills nav-justified">
 										<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
 									</ul>
+										<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
 								</div>
 							</div>
 						</div>
@@ -271,8 +272,8 @@
 									</ul>
 								</div>
 							</div>
-						</div>
-						<div class="col-sm-4">
+						</div -->>
+						<!-- <div class="col-sm-4">
 							<div class="product-image-wrapper">
 								<div class="single-products">
 									<div class="productinfo text-center">
@@ -296,7 +297,7 @@
 									</ul>
 								</div>
 							</div>
-						</div>
+						</div> -->
 						
 					</div><!--features_items-->
 			
@@ -310,8 +311,37 @@
 	<script src="js/bootstrap.min.js"></script>
 	 <script>
     		let test = window.localStorage.getItem("search_Txt");
-			// console.log("==>> "+test.itemName);
-			console.log("==>==> "+ JSON.stringify(JSON.parse(test).res));
+			console.log("==>> "+test);
+
+			let data = JSON.parse(test).res;
+			console.log("==>==> "+ data);
+
+			let htmlContainer = document.body;
+			let render = testArr => {
+				return testArr.map(item=>{
+					return `<div class="col-sm-4">
+								<div class="product-image-wrapper">
+									<div class="single-products">
+											<div class="productinfo text-center">
+												<h2>${item.itemName}</h2>
+												<p>$${item.price}</p>
+												<a href="#" class="btn btn-default add-to-cart"><i class="fa fa-shopping-cart"></i>Add to cart</a>
+											</div>
+									</div>
+									<div class="choose">
+										<ul class="nav nav-pills nav-justified">
+											<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+											<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+										</ul>
+											
+									</div>
+								</div>
+							</div>`
+				})
+
+			}
+			htmlContainer.innerHTML = render(data);
+
     </script>
 	<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
     <script type="text/javascript" src="js/gmaps.js"></script>

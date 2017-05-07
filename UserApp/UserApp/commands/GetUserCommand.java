@@ -17,8 +17,8 @@ public class GetUserCommand extends Command implements Runnable {
 		CallableStatement sqlProc;
 		int intUserID, nSQLResult;
 
-		System.out.println( mapUserData.get("userid"));
-		intUserID = Integer.parseInt((String) mapUserData.get("userid"));
+		System.out.println( mapUserData.get("userID"));
+		intUserID = Integer.parseInt((String) mapUserData.get("userID"));
 
 		if (intUserID <= 0) 
 		{
@@ -57,14 +57,12 @@ public class GetUserCommand extends Command implements Runnable {
 			}
 			
 			n += data.toString();
-//			sb.append(data.toString());
 			rows +=1;
 			System.out.println(results.getRow());
 			System.out.println("Count = " + count);
 		}
 		
-//		n = n.substring(0, n.length()-1);
-//		n += "]}";
+
 		System.out.println(n);
 		sb.append(n);
 

@@ -532,7 +532,7 @@ function deleteUser(userID){
 /////////////////////////////////////////////Item/////////////////////////////////
   // createItem('iphone 7s', '100', 'item created','1', '5', '1');
   // createItem('iphone 7s plus', '90', 'item created','1', '5', '1');
-  // createItem('macbook pro', '950', 'item created','1', '5', '1');
+  createItem('macbook pro', '950', 'item created','1', '5', '1');
   // createItem('ipad pro', '70', 'item created','1', '5', '1');
 
 
@@ -573,4 +573,5 @@ function deleteUser(userID){
 // getAddress('2','1');
 // updateAddress('2','1',"IBIZAAAA")
 // updateUser('3',"Rana","El Bendary", "rana@gmail.com", "topsecret", "female", "");                  
-getUser('77');
+// getUser('77');
+// addAddress('77', 'tagamo3')

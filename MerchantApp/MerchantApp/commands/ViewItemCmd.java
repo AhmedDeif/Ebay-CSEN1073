@@ -34,19 +34,26 @@ public class ViewItemCmd extends Command implements Runnable {
 		System.out.println("Count = " + count);
 		System.out.println("-----------");
 		JsonObject data = new JsonObject();
+		
+		String n ="{\"res\":[";
 		while (results.next()) {
 
 			for (int i = 1; i <= count; i++) {
 				System.out.println(results.getString(i));
 				data.addProperty(metaData.getColumnName(i), results.getString(i));
 			}
-			sb.append(data.toString());
+//			sb.append(data.toString());
+			n += data.toString() + ",";
 			rows += 1;
 
 			System.out.println(results.getRow());
 			System.out.println("Count = " + count);
 		}
 
+		n = n.substring(0, n.length()-1);
+		n += "]}";
+		System.out.println(n);
+		sb.append(n);
 		System.out.println("-----------");
 		System.out.println(sb.toString());
 		if (rows  > 0) {
