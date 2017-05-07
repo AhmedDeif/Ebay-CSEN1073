@@ -677,13 +677,19 @@
 				data: sendInfo,
 				success: function(result){
 					console.log(result);
-          let itemname = JSON.parse(result).responseData.firstname;
-          let itemprice = JSON.parse(result).responseData.lastname;
-          let description = JSON.parse(result).responseData.email;
+					console.log("Ranaaaaa")
+          let itemname = JSON.parse(result).responseData.itemname;
+          					console.log(JSON.parse(result))
+          					console.log(JSON.parse(result).responseData)
+          					console.log(JSON.parse(result))
 
-          $("#itemname").text(itemname);
-          $("#description").text(description);
-          $("#itemprice").text(itemprice);
+          let itemprice = JSON.parse(result).responseData.itemprice;
+          let description = JSON.parse(result).responseData.description;
+
+console.log(itemname + " ooo " + itemprice);
+          $("#itemname").text("item name");
+          $("#description").text("Description");
+          $("#itemprice").text("$Price");
 				}});
 
 
